@@ -1,0 +1,7 @@
+name: landmc-menus
+version: '${version}'
+main: pl.landmc.menus.paper.MenusPlugin
+api-version: '26.2'
+description: Menu sieci LandMC - rysuje to, co przysyla plugin bedacy wlascicielem danych.
+author: Crispi
+website: https://github.com/landmc-network/landmc-menus
