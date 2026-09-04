@@ -52,8 +52,14 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # The credentials are needed to build, not only to publish: the platform modules this
+      # depends on live in GitHub Packages, which requires a login even for a public package.
       - name: Build
-        run: ./gradlew build --no-daemon -Pversion=${{ steps.version.outputs.version }}
+        run: >-
+          ./gradlew build --no-daemon
+          -Pversion=${{ steps.version.outputs.version }}
+          -Pgpr.user=${{ github.actor }}
+          -Pgpr.token=${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to GitHub Packages
         run: >-
