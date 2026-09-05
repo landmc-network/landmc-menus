@@ -27,6 +27,9 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
     private final MenusMessages messages;
     private final MenuStyle style;
     private final MenuChannel channel;
+    /** Where the old server said so when there was nobody to list. */
+    private static final int EMPTY_SLOT = 9;
+
     private final int pendingRequests;
 
     public FriendsMenu(
@@ -84,9 +87,13 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
     protected void decorate() {
         int bottom = this.size() - 9;
 
+        this.tabs();
+
         if (this.isEmpty()) {
+            // Slot 9, where the old server said so - the first square under the tab strip,
+            // where the list itself would have started.
             this.item(
-                    this.size() / 2,
+                    EMPTY_SLOT,
                     Items.of(Material.BOOK)
                             .name(this.style.text().of(this.messages.friends.noFriends))
                             .lore(this.style.text().ofAll(this.messages.friends.noFriendsLore, Map.of()))
