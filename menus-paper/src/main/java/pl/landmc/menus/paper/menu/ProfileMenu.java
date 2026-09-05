@@ -45,6 +45,7 @@ public final class ProfileMenu extends Menu {
     private static final int HEAD_SLOT = 22;
     private static final int SHOP_SLOT = 38;
     private static final int PREMIUM_SLOT = 40;
+    private static final int VISUAL_SLOT = 42;
 
     private final MenuPayload.Profile payload;
     private final MenusMessages messages;
@@ -80,6 +81,10 @@ public final class ProfileMenu extends Menu {
 
         this.button(PREMIUM_SLOT, this.premium(), (player, type) ->
                 this.send(player, MenuAction.of(MenuKind.PROFILE, "premium")));
+
+        // Left open: this one is answered with another menu.
+        this.button(VISUAL_SLOT, this.visual(), (player, type) ->
+                this.channel.send(player, MenuAction.of(MenuKind.PROFILE, "visual")));
 
         this.fill(this.style.filler());
     }
@@ -119,6 +124,14 @@ public final class ProfileMenu extends Menu {
         return Items.head(Bukkit.getOfflinePlayer(this.payload.playerName()))
                 .name(this.style.text().of(profile.playerName, placeholders))
                 .lore(this.style.text().ofAll(profile.playerLore, placeholders))
+                .plain()
+                .build();
+    }
+
+    private ItemStack visual() {
+        return Items.of(Material.NAME_TAG)
+                .name(this.style.text().of(this.messages.profile.visualName))
+                .lore(this.style.text().ofAll(this.messages.profile.visualLore, Map.of()))
                 .plain()
                 .build();
     }

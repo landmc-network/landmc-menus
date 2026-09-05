@@ -209,6 +209,19 @@ public class MenusMessages extends OkaeriConfig {
                 "<gray>Kliknij, aby otworzyć listę.");
 
         @Comment("")
+        @Comment("Kafelek prowadzacy do rang wizualnych. Slot 42 - tam, gdzie stary serwer")
+        @Comment("mial 'Mnozniki (wkrotce)', czyli jedyny kafelek, ktory i tak nic nie robil.")
+        @CustomKey("visual-name")
+        public String visualName = "<green>Rangi wizualne";
+
+        @CustomKey("visual-lore")
+        public List<String> visualLore = List.of(
+                "<gray>Nazwa, którą nosisz na czacie",
+                "<gray>zamiast nazwy swojej rangi.",
+                "",
+                "<yellow>Kliknij, aby wybrać.");
+
+        @Comment("")
         @Comment("Kafelek prowadzacy do sklepu rang.")
         @CustomKey("shop-name")
         public String shopName = "<green>Wspomóż serwer, zakup rangę!";
