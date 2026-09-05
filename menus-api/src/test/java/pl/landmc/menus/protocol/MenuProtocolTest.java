@@ -217,6 +217,7 @@ class MenuProtocolTest {
         assertEquals(5, MenuKind.SHOP.id());
         assertEquals(6, MenuKind.RANKS.id());
         assertEquals(7, MenuKind.VISUAL_RANKS.id());
+        assertEquals(8, MenuKind.STATISTICS.id());
 
         for (MenuKind kind : MenuKind.values()) {
             assertEquals(kind, MenuKind.byId(kind.id()).orElseThrow());
@@ -301,6 +302,20 @@ class MenuProtocolTest {
         // Nobody is wearing one, which is an empty id rather than a missing field.
         MenuPayload.VisualRanks none = new MenuPayload.VisualRanks(0L, "", List.of());
         assertEquals(none, MenuProtocol.decodePayload(MenuProtocol.encode(none)));
+    }
+
+    @Test
+    @DisplayName("the statistics come back as they went out")
+    void roundTripsStatistics() {
+        MenuPayload.Statistics original = new MenuPayload.Statistics("Crispi", List.of(
+                new MenuPayload.Statistics.Entry("Ranga", "DEVELOPER", "PAPER", 20),
+                new MenuPayload.Statistics.Entry("Znajomi", "12", "PLAYER_HEAD", 22)));
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+
+        // A tab with nothing to say is still a tab, not an error.
+        MenuPayload.Statistics empty = new MenuPayload.Statistics("Crispi", List.of());
+        assertEquals(empty, MenuProtocol.decodePayload(MenuProtocol.encode(empty)));
     }
 
     /** A friends payload whose header is valid and whose entry count is not. */

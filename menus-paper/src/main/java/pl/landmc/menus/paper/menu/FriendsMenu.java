@@ -24,6 +24,9 @@ import pl.landmc.platform.paper.menu.PaginatedMenu;
  */
 public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend> {
 
+    /** Which tab this menu is, so the strip knows which one to light. */
+    private static final MenuKind SELF = MenuKind.FRIENDS;
+
     private final MenusMessages messages;
     private final MenuStyle style;
     private final MenuChannel channel;
@@ -133,25 +136,22 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
         return (this.size() / WIDTH / 2) * WIDTH + WIDTH / 2;
     }
 
-    /**
-     * The strip along the top, the same one the profile draws.
-     *
-     * <p>The old server had it in both menus, and without it there is no way back: this list
-     * was opened from the profile and ended there.
-     */
+    /** The strip along the top: this menu, and the way to the other two. */
     private void tabs() {
         for (int slot = 0; slot < MenuTabs.WIDTH && slot < this.size(); slot++) {
             this.item(slot, MenuTabs.filler());
         }
 
-        // Left open, because the profile replaces this menu rather than following it.
-        this.button(
-                MenuTabs.PROFILE_SLOT,
-                MenuTabs.profile(this.messages.common, this.style, false),
-                (player, type) ->
-                        this.channel.send(player, MenuAction.of(MenuKind.FRIENDS, "profile")));
-
-        this.item(MenuTabs.FRIENDS_SLOT, MenuTabs.friends(this.messages.common, this.style, true));
+        for (MenuTabs.Tab tab : MenuTabs.strip(this.messages.common, this.style, SELF)) {
+            if (tab.action() == null) {
+                this.item(tab.slot(), tab.item());
+                continue;
+            }
+            // Left open: every one of these is answered with another menu, and closing first
+            // would show the world for the length of one round trip to the proxy.
+            this.button(tab.slot(), tab.item(), (player, type) ->
+                    this.channel.send(player, tab.action()));
+        }
     }
 
     @Override

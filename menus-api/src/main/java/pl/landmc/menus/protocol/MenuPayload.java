@@ -256,4 +256,43 @@ public sealed interface MenuPayload {
             }
         }
     }
+
+    /**
+     * The statistics tab: whatever the network can currently say about a player.
+     *
+     * <p>A list of labelled values rather than a record with a field per statistic, and that is
+     * the point of it. The things worth counting on this network do not exist yet - there are no
+     * islands, no jobs, no minigames - so the shape that survives is one where adding a
+     * statistic later is a line in whichever plugin owns the number, not a change to a wire
+     * format three servers have to agree on at once.
+     */
+    record Statistics(String subject, List<Entry> entries) implements MenuPayload {
+
+        public Statistics {
+            Objects.requireNonNull(subject, "subject");
+            entries = List.copyOf(Objects.requireNonNull(entries, "entries"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.STATISTICS;
+        }
+
+        /**
+         * One line of the tab.
+         *
+         * @param icon the material to draw it as; an unknown one falls back rather than
+         *     emptying the tab
+         * @param value already formatted by whoever owns the number - a date, a count, a
+         *     duration. The menu does not know what any of them mean and must not try.
+         */
+        public record Entry(String label, String value, String icon, int slot) {
+
+            public Entry {
+                Objects.requireNonNull(label, "label");
+                Objects.requireNonNull(value, "value");
+                Objects.requireNonNull(icon, "icon");
+            }
+        }
+    }
 }

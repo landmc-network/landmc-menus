@@ -18,7 +18,10 @@ public enum MenuKind {
     RANKS(6),
 
     /** The visual ranks: a name of your own, in your rank's colours. */
-    VISUAL_RANKS(7);
+    VISUAL_RANKS(7),
+
+    /** The third tab of the profile: whatever the network can say about a player. */
+    STATISTICS(8);
 
     private final int id;
 

@@ -63,6 +63,7 @@ public final class MenuProtocol {
                 case MenuPayload.Shop shop -> writeShop(out, shop);
                 case MenuPayload.Ranks ranks -> writeRanks(out, ranks);
                 case MenuPayload.VisualRanks visual -> writeVisualRanks(out, visual);
+                case MenuPayload.Statistics statistics -> writeStatistics(out, statistics);
             }
         }
         catch (IOException exception) {
@@ -178,6 +179,20 @@ public final class MenuProtocol {
         }
     }
 
+    private static void writeStatistics(DataOutputStream out, MenuPayload.Statistics payload)
+            throws IOException {
+
+        out.writeUTF(payload.subject());
+        out.writeInt(payload.entries().size());
+
+        for (MenuPayload.Statistics.Entry entry : payload.entries()) {
+            out.writeUTF(entry.label());
+            out.writeUTF(entry.value());
+            out.writeUTF(entry.icon());
+            out.writeInt(entry.slot());
+        }
+    }
+
     private static void writeServers(DataOutputStream out, MenuPayload.Servers payload)
             throws IOException {
 
@@ -216,6 +231,7 @@ public final class MenuProtocol {
                 case SHOP -> readShop(in);
                 case RANKS -> readRanks(in);
                 case VISUAL_RANKS -> readVisualRanks(in);
+                case STATISTICS -> readStatistics(in);
             };
         }
         catch (IOException exception) {
@@ -366,6 +382,19 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.VisualRanks(Math.max(0L, balance), active, offers);
+    }
+
+    private static MenuPayload readStatistics(DataInputStream in) throws IOException {
+        String subject = in.readUTF();
+        int count = readCount(in);
+
+        List<MenuPayload.Statistics.Entry> entries = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            entries.add(new MenuPayload.Statistics.Entry(
+                    in.readUTF(), in.readUTF(), in.readUTF(), in.readInt()));
+        }
+
+        return new MenuPayload.Statistics(subject, entries);
     }
 
     private static MenuPayload readServers(DataInputStream in) throws IOException {

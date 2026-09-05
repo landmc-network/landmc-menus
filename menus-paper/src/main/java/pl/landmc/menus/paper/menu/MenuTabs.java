@@ -1,27 +1,32 @@
 package pl.landmc.menus.paper.menu;
 
+import java.util.List;
 import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.Nullable;
 import pl.landmc.menus.paper.config.MenusMessages;
+import pl.landmc.menus.protocol.MenuAction;
+import pl.landmc.menus.protocol.MenuKind;
 import pl.landmc.platform.paper.menu.Items;
 
 /**
- * The strip along the top of the profile and the friends list.
+ * The strip along the top of the profile, the friends list and the statistics.
  *
- * <p>The old server drew the same bar in both, which is what made them one place rather than two
- * menus that happen to be related: whichever you were looking at, the other was one click away.
- * Ours had no way back at all - {@code /profil} opened the friends list and that was the end of
- * it.
+ * <p>The old server drew the same bar in all of them, which is what made them one place rather
+ * than three menus that happen to know about each other. Ours had no way back at all until this
+ * existed.
  *
- * <p>The colours are the ones it used: magenta for the profile, lime for the friends, and a
- * plain grey row behind them.
+ * <p>Described here and placed by each menu, rather than drawn here directly: filling slots is
+ * a menu's own job and the platform keeps it that way. What this owns is which tabs there are,
+ * what they look like and which one you are standing on - the part that was being written three
+ * times over and went wrong in one of them.
+ *
+ * <p>The colours are the old server's: magenta for the profile, lime for the friends, white for
+ * the statistics, on a plain grey row.
  */
 public final class MenuTabs {
 
-    /** Where the two tabs sit, and where the row they sit in ends. */
-    public static final int PROFILE_SLOT = 0;
-    public static final int FRIENDS_SLOT = 1;
     public static final int WIDTH = 9;
 
     private MenuTabs() {
@@ -32,31 +37,53 @@ public final class MenuTabs {
         return Items.filler(Material.GRAY_STAINED_GLASS_PANE);
     }
 
-    public static ItemStack profile(MenusMessages.CommonSection messages, MenuStyle style, boolean active) {
-        return tab(Material.MAGENTA_STAINED_GLASS_PANE, messages.tabProfile, style, active);
-    }
-
-    public static ItemStack friends(MenusMessages.CommonSection messages, MenuStyle style, boolean active) {
-        return tab(Material.LIME_STAINED_GLASS_PANE, messages.tabFriends, style, active);
-    }
-
     /**
-     * One tab.
+     * The three tabs, in order.
      *
-     * <p>The one you are looking at glows, which is how the old server showed it - it enchanted
-     * the pane and hid the enchantment.
+     * @param active which menu is being drawn. That tab glows and carries no action, because
+     *     asking the proxy for the menu you are already looking at is a round trip that ends
+     *     where it started.
      */
-    private static ItemStack tab(
-            Material material, String name, MenuStyle style, boolean active) {
+    public static List<Tab> strip(
+            MenusMessages.CommonSection messages, MenuStyle style, MenuKind active) {
+
+        return List.of(
+                tab(0, Material.MAGENTA_STAINED_GLASS_PANE, messages.tabProfile, style,
+                        active, MenuKind.PROFILE, "profile"),
+                tab(1, Material.LIME_STAINED_GLASS_PANE, messages.tabFriends, style,
+                        active, MenuKind.FRIENDS, "friends"),
+                tab(2, Material.WHITE_STAINED_GLASS_PANE, messages.tabStatistics, style,
+                        active, MenuKind.STATISTICS, "statistics"));
+    }
+
+    private static Tab tab(
+            int slot,
+            Material material,
+            String name,
+            MenuStyle style,
+            MenuKind active,
+            MenuKind self,
+            String action) {
+
+        boolean current = active == self;
 
         Items.Builder item = Items.of(material)
                 .name(style.text().of(name, Map.of()))
                 .plain();
 
-        if (active) {
+        if (current) {
+            // The old server enchanted the pane and hid the enchantment to say "you are here".
             item.glowing();
         }
 
-        return item.build();
+        return new Tab(slot, item.build(), current ? null : MenuAction.of(active, action));
+    }
+
+    /**
+     * One tab, ready to be placed.
+     *
+     * @param action what to send when it is clicked, or null for the tab already being shown
+     */
+    public record Tab(int slot, ItemStack item, @Nullable MenuAction action) {
     }
 }

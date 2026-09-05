@@ -15,6 +15,7 @@ import pl.landmc.menus.paper.menu.ProfileMenu;
 import pl.landmc.menus.paper.menu.PunishmentsMenu;
 import pl.landmc.menus.paper.menu.RanksMenu;
 import pl.landmc.menus.paper.menu.ServersMenu;
+import pl.landmc.menus.paper.menu.StatisticsMenu;
 import pl.landmc.menus.paper.menu.VisualRanksMenu;
 import pl.landmc.menus.paper.menu.ShopMenu;
 import pl.landmc.menus.protocol.MenuPayload;
@@ -108,6 +109,8 @@ public final class MenuMessageListener implements PluginMessageListener {
                     ranks, this.messages.ranks, this.style, this.channel);
             case MenuPayload.VisualRanks visual -> new VisualRanksMenu(
                     visual, this.messages.visualRanks, this.style, this.channel);
+            case MenuPayload.Statistics statistics -> new StatisticsMenu(
+                    statistics, this.messages, this.style, this.channel);
         };
 
         // Paper hands plugin messages to listeners on the main thread, which is where a menu

@@ -34,6 +34,9 @@ public class MenusMessages extends OkaeriConfig {
     public ProfileSection profile = new ProfileSection();
 
     @Comment("")
+    public StatisticsSection statistics = new StatisticsSection();
+
+    @Comment("")
     public ShopSection shop = new ShopSection();
 
     @Comment("")
@@ -64,6 +67,9 @@ public class MenusMessages extends OkaeriConfig {
 
         @CustomKey("tab-friends")
         public String tabFriends = "<green>Znajomi";
+
+        @CustomKey("tab-statistics")
+        public String tabStatistics = "<green>Statystyki";
 
         @Comment("")
         @Comment("Pokazywane, gdy proxy przysle menu, ktorego ta wersja pluginu nie zna.")
@@ -415,6 +421,38 @@ public class MenusMessages extends OkaeriConfig {
 
         @CustomKey("back-lore")
         public List<String> backLore = List.of("<yellow>Kliknij, aby powrócić.");
+    }
+
+    /** The third tab of the profile. */
+    public static class StatisticsSection extends OkaeriConfig {
+
+        @Comment("Placeholder: {PLAYER}")
+        public String title = "<dark_gray>Twój profil - Statystyki";
+
+        @Comment("")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Kafelek jednej statystyki. Etykiete, wartosc, przedmiot i slot podaje")
+        @Comment("wtyczka, ktora te liczbe posiada - to menu nie wie, co pokazuje.")
+        @Comment("Placeholdery: {LABEL}, {VALUE}")
+        @CustomKey("entry-name")
+        public String entryName = "<green>{LABEL}";
+
+        @CustomKey("entry-lore")
+        public List<String> entryLore = List.of("", "<white>{VALUE}", "");
+
+        @Comment("")
+        @Comment("Gdy siec nie ma jeszcze nic do policzenia.")
+        @CustomKey("empty-name")
+        public String emptyName = "<green>Brak statystyk";
+
+        @CustomKey("empty-lore")
+        public List<String> emptyLore = List.of(
+                "<gray>Nie ma jeszcze czego liczyć.",
+                "",
+                "<gray>Pojawią się tutaj, kiedy",
+                "<gray>ruszy rozgrywka na SkyBlocku.");
     }
 
     /** {@code /serwery} */

@@ -47,6 +47,9 @@ public final class ProfileMenu extends Menu {
     private static final int PREMIUM_SLOT = 40;
     private static final int VISUAL_SLOT = 42;
 
+    /** Which tab this menu is, so the strip knows which one to light. */
+    private static final MenuKind SELF = MenuKind.PROFILE;
+
     private final MenuPayload.Profile payload;
     private final MenusMessages messages;
     private final MenuStyle style;
@@ -89,21 +92,22 @@ public final class ProfileMenu extends Menu {
         this.fill(this.style.filler());
     }
 
-    /** The strip along the top: this menu, and the way to the friends list. */
+    /** The strip along the top: this menu, and the way to the other two. */
     private void tabs() {
         for (int slot = 0; slot < MenuTabs.WIDTH && slot < this.size(); slot++) {
             this.item(slot, MenuTabs.filler());
         }
 
-        this.item(MenuTabs.PROFILE_SLOT, MenuTabs.profile(this.messages.common, this.style, true));
-
-        // Left open: the friends list replaces this menu, and closing first would show the
-        // world for the length of one round trip to the proxy.
-        this.button(
-                MenuTabs.FRIENDS_SLOT,
-                MenuTabs.friends(this.messages.common, this.style, false),
-                (player, type) ->
-                        this.channel.send(player, MenuAction.of(MenuKind.PROFILE, "friends")));
+        for (MenuTabs.Tab tab : MenuTabs.strip(this.messages.common, this.style, SELF)) {
+            if (tab.action() == null) {
+                this.item(tab.slot(), tab.item());
+                continue;
+            }
+            // Left open: every one of these is answered with another menu, and closing first
+            // would show the world for the length of one round trip to the proxy.
+            this.button(tab.slot(), tab.item(), (player, type) ->
+                    this.channel.send(player, tab.action()));
+        }
     }
 
     private ItemStack head() {
