@@ -8,44 +8,38 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * What a backend needs to draw on its sidebar and cannot know by itself.
+ * What a backend needs to draw a sidebar that mentions money.
  *
- * <p>Today that is one number: how many diamonds the player has. It lives on the proxy, and a
- * scoreboard redraws every second or two per player - reading it from the database at that rate
- * would be a query per player per tick-and-a-bit for a value that changes a few times a day. So
- * the proxy pushes it when it changes and the backend keeps the last thing it was told.
+ * <p>Pushed rather than asked for: the sidebar redraws on a timer and a request per player per
+ * second would be a conversation about a number that changes when somebody buys something.
  *
- * <p>This sits beside the menu protocol, and shares its artifact, because it is the same seam:
- * data the proxy owns, sent to the server that displays it. The artifact's name has outgrown its
- * contents - if a third thing joins these two, it is worth splitting out and naming for what it
- * really is.
- *
- * <p>Push, not request-and-answer. A backend that asked would have to wait for a reply before it
- * could draw, and the first frame of a scoreboard is the one a player sees on arrival.
+ * <p>Both currencies travel together because they change together - a purchase moves one and a
+ * reward moves the other, and either way the whole line is redrawn. Two messages would be two
+ * chances for a sidebar to show one number from before and one from after.
  */
 public final class SidebarProtocol {
 
-    /** The channel both sides register. */
     public static final String CHANNEL = "landmc:sidebar";
 
     /**
-     * Bumped when the meaning of existing bytes changes, never for an addition at the end.
+     * Two, because the message gained coins.
      *
-     * <p>During a rolling restart an older backend reads a newer proxy's messages. It has to be
-     * able to tell "I do not understand this" from "this is corrupt", and leave the sidebar as
-     * it was rather than draw a wrong number.
+     * <p>A backend that has not been updated refuses a message it cannot read rather than
+     * reading the first eight bytes as a balance and the rest as nothing - which is what an
+     * unversioned format would have done, and it would have shown the right diamonds beside a
+     * silently missing second number.
      */
-    private static final byte VERSION = 1;
+    private static final byte VERSION = 2;
 
     private SidebarProtocol() {
     }
 
-    /** Encodes what the player has, to be sent to the server they are standing on. */
-    public static byte[] encode(long balance) {
+    public static byte[] encode(long diamonds, long coins) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(bytes)) {
             out.writeByte(VERSION);
-            out.writeLong(balance);
+            out.writeLong(diamonds);
+            out.writeLong(coins);
         }
         catch (IOException exception) {
             // A ByteArrayOutputStream does not fail; pretending it might would put a checked
@@ -55,15 +49,7 @@ public final class SidebarProtocol {
         return bytes.toByteArray();
     }
 
-    /**
-     * Reads a balance.
-     *
-     * <p>Never negative, whatever arrives: this number is shown to a player about their own
-     * money, and the one thing worse than a stale figure is an impossible one.
-     *
-     * @throws MenuProtocolException when the bytes are not an update this version understands
-     */
-    public static long decodeBalance(byte[] message) {
+    public static Balances decode(byte[] message) {
         Objects.requireNonNull(message, "message");
 
         try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(message))) {
@@ -72,10 +58,16 @@ public final class SidebarProtocol {
                 throw new MenuProtocolException(
                         "Sidebar protocol version " + version + "; this build speaks " + VERSION);
             }
-            return Math.max(0L, in.readLong());
+            // Neither can be negative, and a negative one would only be there to make a line
+            // of the sidebar lie.
+            return new Balances(Math.max(0L, in.readLong()), Math.max(0L, in.readLong()));
         }
         catch (IOException exception) {
             throw new MenuProtocolException("Truncated sidebar update", exception);
         }
+    }
+
+    /** What a player has, in both of the network's currencies. */
+    public record Balances(long diamonds, long coins) {
     }
 }
