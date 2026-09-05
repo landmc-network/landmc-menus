@@ -129,6 +129,12 @@ public final class CosmeticsMenu extends Menu {
                 .lore(this.style.text().ofAll(this.lore(offer, worn), placeholders))
                 .plain();
 
+        // Without this a family whose tiles are all the same material - six pairs of wings on
+        // six pieces of paper - is six identical tiles.
+        if (offer.iconModelData() > 0) {
+            item.modelData(offer.iconModelData());
+        }
+
         if (worn) {
             item.glowing();
         }

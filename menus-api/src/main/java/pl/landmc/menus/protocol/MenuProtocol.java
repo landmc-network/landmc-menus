@@ -226,6 +226,7 @@ public final class MenuProtocol {
             out.writeUTF(offer.family());
             out.writeUTF(offer.name());
             out.writeUTF(offer.icon());
+            out.writeInt(offer.iconModelData());
             out.writeInt(offer.slot());
             out.writeLong(offer.price());
             out.writeBoolean(offer.owned());
@@ -499,6 +500,7 @@ public final class MenuProtocol {
                     in.readUTF(),
                     in.readUTF(),
                     in.readUTF(),
+                    in.readInt(),
                     in.readInt(),
                     in.readLong(),
                     in.readBoolean()));

@@ -335,10 +335,10 @@ class MenuProtocolTest {
                 List.of(
                         new MenuPayload.Cosmetics.Offer(
                                 "flame", "PARTICLE", "<gold>Płomienie", "BLAZE_POWDER",
-                                19, 150L, true),
+                                0, 19, 150L, true),
                         new MenuPayload.Cosmetics.Offer(
                                 "red", "GLOW", "<red>Czerwona poświata", "RED_DYE",
-                                28, 200L, false)));
+                                0, 28, 200L, false)));
 
         assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
 

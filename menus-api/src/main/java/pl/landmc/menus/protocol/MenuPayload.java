@@ -211,6 +211,8 @@ public sealed interface MenuPayload {
 
         /**
          * @param family which of them it belongs to, as the shop names it
+         * @param iconModelData which model of that material to draw the tile as, or zero for
+         *     the plain item. Six pairs of wings are six pieces of paper without it.
          * @param owned whether it has been bought already, which is what decides between a
          *     price and an invitation to put it on
          */
@@ -219,6 +221,7 @@ public sealed interface MenuPayload {
                 String family,
                 String name,
                 String icon,
+                int iconModelData,
                 int slot,
                 long price,
                 boolean owned) {
