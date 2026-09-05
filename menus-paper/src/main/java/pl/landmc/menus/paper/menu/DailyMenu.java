@@ -34,6 +34,7 @@ public final class DailyMenu extends Menu {
 
     private static final String CLAIMED = "CLAIMED";
     private static final String TODAY = "TODAY";
+    private static final String NEXT = "NEXT";
 
     private final MenuPayload.Daily payload;
     private final MenusMessages.DailySection messages;
@@ -112,6 +113,7 @@ public final class DailyMenu extends Menu {
         return switch (state) {
             case CLAIMED -> this.messages.dayClaimedLore;
             case TODAY -> this.messages.dayTodayLore;
+            case NEXT -> this.messages.dayNextLore;
             default -> this.messages.dayLockedLore;
         };
     }
@@ -120,6 +122,7 @@ public final class DailyMenu extends Menu {
         String name = switch (state) {
             case CLAIMED -> this.messages.claimedMaterial;
             case TODAY -> this.messages.todayMaterial;
+            case NEXT -> this.messages.nextMaterial;
             default -> this.messages.lockedMaterial;
         };
 
