@@ -25,8 +25,9 @@ import pl.landmc.platform.paper.menu.Menu;
  */
 public final class RanksMenu extends Menu {
 
-    /** Where the original kept the way back. */
+    /** Where the original kept the way back, and the way on to the visual ranks. */
     private static final int BACK_SLOT = 53;
+    private static final int VISUAL_SLOT = 49;
 
     private final MenuPayload.Ranks payload;
     private final MenusMessages.RanksSection messages;
@@ -67,6 +68,10 @@ public final class RanksMenu extends Menu {
             this.button(offer.slot(), this.render(offer), (player, type) ->
                     this.channel.send(player, MenuAction.of(MenuKind.RANKS, "buy", offer.id())));
         }
+
+        // Left open: both of these are answered with another menu.
+        this.button(VISUAL_SLOT, this.visual(), (player, type) ->
+                this.channel.send(player, MenuAction.of(MenuKind.RANKS, "visual")));
 
         this.button(BACK_SLOT, this.back(), (player, type) ->
                 this.channel.send(player, MenuAction.of(MenuKind.RANKS, "back")));
@@ -112,6 +117,14 @@ public final class RanksMenu extends Menu {
         return offer.missing(this.payload.balance()) > 0L
                 ? this.messages.stateTooPoor
                 : this.messages.stateBuy;
+    }
+
+    private ItemStack visual() {
+        return Items.of(Material.PAPER)
+                .name(this.style.text().of(this.messages.visualName))
+                .lore(this.style.text().ofAll(this.messages.visualLore, Map.of()))
+                .plain()
+                .build();
     }
 
     private ItemStack back() {

@@ -15,7 +15,10 @@ public enum MenuKind {
     SHOP(5),
 
     /** The rank shop behind it. */
-    RANKS(6);
+    RANKS(6),
+
+    /** The visual ranks: a name of your own, in your rank's colours. */
+    VISUAL_RANKS(7);
 
     private final int id;
 

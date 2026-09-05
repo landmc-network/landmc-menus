@@ -216,4 +216,44 @@ public sealed interface MenuPayload {
             }
         }
     }
+
+    /**
+     * The visual ranks: a name a player wears instead of their rank's, bought with diamonds.
+     *
+     * <p>What is on sale is the same for everybody, so the only per-player parts are which ones
+     * they already own, which one they are wearing, and what they have to spend.
+     *
+     * @param active the id of the one being worn, or empty for none
+     */
+    record VisualRanks(long balance, String active, List<Offer> offers) implements MenuPayload {
+
+        public VisualRanks {
+            Objects.requireNonNull(active, "active");
+            offers = List.copyOf(Objects.requireNonNull(offers, "offers"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.VISUAL_RANKS;
+        }
+
+        /**
+         * One visual rank.
+         *
+         * @param name what it reads as, without the colour - that comes from the rank the
+         *     player already has, which is the whole idea: the name is theirs, the colour is
+         *     what they earned
+         */
+        public record Offer(String id, String name, long price, boolean owned) {
+
+            public Offer {
+                Objects.requireNonNull(id, "id");
+                Objects.requireNonNull(name, "name");
+            }
+
+            public long missing(long balance) {
+                return Math.max(0L, this.price - balance);
+            }
+        }
+    }
 }

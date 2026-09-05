@@ -216,6 +216,7 @@ class MenuProtocolTest {
         assertEquals(4, MenuKind.PROFILE.id());
         assertEquals(5, MenuKind.SHOP.id());
         assertEquals(6, MenuKind.RANKS.id());
+        assertEquals(7, MenuKind.VISUAL_RANKS.id());
 
         for (MenuKind kind : MenuKind.values()) {
             assertEquals(kind, MenuKind.byId(kind.id()).orElseThrow());
@@ -286,6 +287,20 @@ class MenuProtocolTest {
 
         MenuPayload.Ranks decoded = (MenuPayload.Ranks) MenuProtocol.decodePayload(encoded);
         assertEquals(0L, decoded.balance());
+    }
+
+    @Test
+    @DisplayName("the visual ranks come back as they went out")
+    void roundTripsVisualRanks() {
+        MenuPayload.VisualRanks original = new MenuPayload.VisualRanks(340L, "dzban", List.of(
+                new MenuPayload.VisualRanks.Offer("dzban", "Dzban", 20L, true),
+                new MenuPayload.VisualRanks.Offer("shrek", "Shrek", 100L, false)));
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+
+        // Nobody is wearing one, which is an empty id rather than a missing field.
+        MenuPayload.VisualRanks none = new MenuPayload.VisualRanks(0L, "", List.of());
+        assertEquals(none, MenuProtocol.decodePayload(MenuProtocol.encode(none)));
     }
 
     /** A friends payload whose header is valid and whose entry count is not. */

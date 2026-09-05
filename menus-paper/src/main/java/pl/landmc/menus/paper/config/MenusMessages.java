@@ -39,6 +39,10 @@ public class MenusMessages extends OkaeriConfig {
     @Comment("")
     public RanksSection ranks = new RanksSection();
 
+    @Comment("")
+    @CustomKey("visual-ranks")
+    public VisualRanksSection visualRanks = new VisualRanksSection();
+
     /** Text that appears in more than one menu. */
     public static class CommonSection extends OkaeriConfig {
 
@@ -321,7 +325,78 @@ public class MenusMessages extends OkaeriConfig {
         public String stateOwned = "<red>Masz już zakupioną tę rangę!";
 
         @Comment("")
+        @Comment("Kafelek rang wizualnych. Slot 49, tak jak w oryginale.")
+        @CustomKey("visual-name")
+        public String visualName = "<green>Rangi wizualne";
+
+        @CustomKey("visual-lore")
+        public List<String> visualLore = List.of(
+                "<gray>Wizualna ranga, która będzie",
+                "<gray>wyświetlana na czacie.",
+                "",
+                "<yellow>Kliknij, aby przejść dalej.");
+
+        @Comment("")
         @Comment("Strzalka powrotu do /sklep. Slot 53, tak jak w oryginale.")
+        @CustomKey("back-name")
+        public String backName = "<green><bold>POWRÓT";
+
+        @CustomKey("back-lore")
+        public List<String> backLore = List.of("<yellow>Kliknij, aby powrócić.");
+    }
+
+    /** The visual ranks, behind the rank shop. */
+    public static class VisualRanksSection extends OkaeriConfig {
+
+        public String title = "<dark_gray>Rangi wizualne";
+
+        @Comment("")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Nazwa kafelka. Placeholder: {RANK}")
+        @CustomKey("rank-name")
+        public String rankName = "<green>{RANK}";
+
+        @Comment("")
+        @Comment("Opis. Placeholdery: {RANK}, {PRICE}, {MISSING}, {STATE}")
+        @CustomKey("rank-lore")
+        public List<String> rankLore = List.of(
+                "<gray>Wizualna ranga wyświetlana na czacie",
+                "<gray>zamiast nazwy Twojej rangi.",
+                "",
+                "<white>Cena: <aqua>{PRICE}❖",
+                "",
+                "{STATE}");
+
+        @Comment("")
+        @Comment("Ostatnia linia opisu, zaleznie od stanu.")
+        @CustomKey("state-buy")
+        public String stateBuy = "<yellow>Kliknij, aby zakupić.";
+
+        @CustomKey("state-too-poor")
+        public String stateTooPoor =
+                "<red>Brakuje Ci <aqua>{MISSING}❖<red>, aby ją zakupić.";
+
+        @CustomKey("state-owned")
+        public String stateOwned = "<yellow>Kliknij, aby założyć.";
+
+        @CustomKey("state-active")
+        public String stateActive = "<green>Nosisz tę rangę.";
+
+        @Comment("")
+        @Comment("Kafelek zdejmujacy range wizualna.")
+        @CustomKey("clear-name")
+        public String clearName = "<green>Zdejmij rangę wizualną";
+
+        @CustomKey("clear-lore")
+        public List<String> clearLore = List.of(
+                "<gray>Wrócisz do nazwy swojej zwykłej rangi.",
+                "",
+                "<yellow>Kliknij, aby zdjąć.");
+
+        @Comment("")
+        @Comment("Strzalka powrotu do sklepu rang.")
         @CustomKey("back-name")
         public String backName = "<green><bold>POWRÓT";
 

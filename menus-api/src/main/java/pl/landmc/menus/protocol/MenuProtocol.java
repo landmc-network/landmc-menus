@@ -62,6 +62,7 @@ public final class MenuProtocol {
                 case MenuPayload.Profile profile -> writeProfile(out, profile);
                 case MenuPayload.Shop shop -> writeShop(out, shop);
                 case MenuPayload.Ranks ranks -> writeRanks(out, ranks);
+                case MenuPayload.VisualRanks visual -> writeVisualRanks(out, visual);
             }
         }
         catch (IOException exception) {
@@ -162,6 +163,21 @@ public final class MenuProtocol {
         }
     }
 
+    private static void writeVisualRanks(DataOutputStream out, MenuPayload.VisualRanks payload)
+            throws IOException {
+
+        out.writeLong(payload.balance());
+        out.writeUTF(payload.active());
+        out.writeInt(payload.offers().size());
+
+        for (MenuPayload.VisualRanks.Offer offer : payload.offers()) {
+            out.writeUTF(offer.id());
+            out.writeUTF(offer.name());
+            out.writeLong(offer.price());
+            out.writeBoolean(offer.owned());
+        }
+    }
+
     private static void writeServers(DataOutputStream out, MenuPayload.Servers payload)
             throws IOException {
 
@@ -199,6 +215,7 @@ public final class MenuProtocol {
                 case PROFILE -> readProfile(in);
                 case SHOP -> readShop(in);
                 case RANKS -> readRanks(in);
+                case VISUAL_RANKS -> readVisualRanks(in);
             };
         }
         catch (IOException exception) {
@@ -335,6 +352,20 @@ public final class MenuProtocol {
 
         // A negative balance cannot happen and would only be there to make a lore line lie.
         return new MenuPayload.Ranks(Math.max(0L, balance), offers);
+    }
+
+    private static MenuPayload readVisualRanks(DataInputStream in) throws IOException {
+        long balance = in.readLong();
+        String active = in.readUTF();
+        int count = readCount(in);
+
+        List<MenuPayload.VisualRanks.Offer> offers = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            offers.add(new MenuPayload.VisualRanks.Offer(
+                    in.readUTF(), in.readUTF(), in.readLong(), in.readBoolean()));
+        }
+
+        return new MenuPayload.VisualRanks(Math.max(0L, balance), active, offers);
     }
 
     private static MenuPayload readServers(DataInputStream in) throws IOException {
