@@ -201,7 +201,18 @@ public final class MenuProtocol {
     private static void writeCosmetics(DataOutputStream out, MenuPayload.Cosmetics payload)
             throws IOException {
 
+        out.writeUTF(payload.category());
         out.writeLong(payload.balance());
+
+        out.writeInt(payload.categories().size());
+        for (MenuPayload.Cosmetics.Category category : payload.categories()) {
+            out.writeUTF(category.id());
+            out.writeUTF(category.name());
+            out.writeUTF(category.icon());
+            out.writeInt(category.slot());
+            out.writeInt(category.owned());
+            out.writeInt(category.total());
+        }
 
         out.writeInt(payload.worn().size());
         for (Map.Entry<String, String> worn : payload.worn().entrySet()) {
@@ -459,7 +470,20 @@ public final class MenuProtocol {
     }
 
     private static MenuPayload readCosmetics(DataInputStream in) throws IOException {
+        String category = in.readUTF();
         long balance = in.readLong();
+
+        int categoryCount = readCount(in);
+        List<MenuPayload.Cosmetics.Category> categories = new ArrayList<>(categoryCount);
+        for (int index = 0; index < categoryCount; index++) {
+            categories.add(new MenuPayload.Cosmetics.Category(
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readInt(),
+                    in.readInt(),
+                    in.readInt()));
+        }
 
         int wornCount = readCount(in);
         Map<String, String> worn = new LinkedHashMap<>(wornCount);
@@ -480,7 +504,7 @@ public final class MenuProtocol {
                     in.readBoolean()));
         }
 
-        return new MenuPayload.Cosmetics(balance, worn, offers);
+        return new MenuPayload.Cosmetics(category, balance, worn, categories, offers);
     }
 
     private static MenuPayload readReport(DataInputStream in) throws IOException {

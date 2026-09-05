@@ -15,9 +15,10 @@ import pl.landmc.platform.paper.menu.Menu;
 /**
  * The cosmetics: what is on offer, what has been bought and what is being worn.
  *
- * <p>Every family on one screen rather than a screen each. A player wears one trail and one
- * glow at the same time, and the thing they most want to see is which - splitting that across
- * two menus means clicking twice to answer one question.
+ * <p>Two screens and one class, because they are the same menu at two depths: a way in that
+ * lists the families, and a room that lists one family's tiles. Everything else about them is
+ * identical - the balance, what is worn, what a click means - and the payload says which of the
+ * two it is by whether a category was asked for.
  *
  * <p>Three states per tile, and they are three different sentences: not bought yet says what it
  * costs, bought says to put it on, worn says to take it off. Clicking is the same action either
@@ -50,10 +51,21 @@ public final class CosmeticsMenu extends Menu {
 
     @Override
     protected void redraw() {
+        if (this.payload.isIndex()) {
+            this.drawCategories();
+            this.fill(this.style.filler());
+            return;
+        }
+
+        if (this.fits(this.messages.backSlot)) {
+            this.button(this.messages.backSlot, this.back(), (player, type) ->
+                    this.channel.send(player, MenuAction.of(MenuKind.COSMETICS, "open")));
+        }
+
         for (MenuPayload.Cosmetics.Offer offer : this.payload.offers()) {
             // A slot outside this menu would throw while drawing and lose the whole thing. The
             // shop decides the layout and a configuration can be wrong about how big this is.
-            if (offer.slot() < 0 || offer.slot() >= this.size()) {
+            if (!this.fits(offer.slot())) {
                 continue;
             }
 
@@ -65,6 +77,41 @@ public final class CosmeticsMenu extends Menu {
         }
 
         this.fill(this.style.filler());
+    }
+
+    private void drawCategories() {
+        for (MenuPayload.Cosmetics.Category category : this.payload.categories()) {
+            if (!this.fits(category.slot())) {
+                continue;
+            }
+
+            Map<String, String> placeholders = Map.of(
+                    "{NAME}", category.name(),
+                    "{OWNED}", Integer.toString(category.owned()),
+                    "{TOTAL}", Integer.toString(category.total()),
+                    "{BALANCE}", Long.toString(this.payload.balance()));
+
+            ItemStack tile = Items.of(material(category.icon()))
+                    .name(this.style.text().of(this.messages.categoryName, placeholders))
+                    .lore(this.style.text().ofAll(this.messages.categoryLore, placeholders))
+                    .plain()
+                    .build();
+
+            this.button(category.slot(), tile, (player, type) -> this.channel.send(
+                    player, MenuAction.of(MenuKind.COSMETICS, "category", category.id())));
+        }
+    }
+
+    private ItemStack back() {
+        return Items.of(material(this.messages.backIcon))
+                .name(this.style.text().of(this.messages.backName))
+                .lore(this.style.text().ofAll(this.messages.backLore, Map.of()))
+                .plain()
+                .build();
+    }
+
+    private boolean fits(int slot) {
+        return slot >= 0 && slot < this.size();
     }
 
     private ItemStack render(MenuPayload.Cosmetics.Offer offer) {

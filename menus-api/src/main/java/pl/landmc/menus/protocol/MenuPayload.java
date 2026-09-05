@@ -158,17 +158,55 @@ public sealed interface MenuPayload {
      * @param worn the cosmetic worn in each family, keyed by the family's name; a family absent
      *     from the map is one they are wearing nothing from
      */
-    record Cosmetics(long balance, Map<String, String> worn, List<Offer> offers)
-            implements MenuPayload {
+    record Cosmetics(
+            String category,
+            long balance,
+            Map<String, String> worn,
+            List<Category> categories,
+            List<Offer> offers) implements MenuPayload {
 
         public Cosmetics {
+            Objects.requireNonNull(category, "category");
             worn = Map.copyOf(Objects.requireNonNull(worn, "worn"));
+            categories = List.copyOf(Objects.requireNonNull(categories, "categories"));
             offers = List.copyOf(Objects.requireNonNull(offers, "offers"));
+        }
+
+        /**
+         * Whether this is the way in or one of the rooms.
+         *
+         * <p>One payload for both screens rather than a kind each. They are the same menu at two
+         * depths - the same balance, the same worn set, the same click handler - and telling
+         * them apart by whether a category was asked for keeps that true on the wire as well.
+         */
+        public boolean isIndex() {
+            return this.category.isBlank();
         }
 
         @Override
         public MenuKind kind() {
             return MenuKind.COSMETICS;
+        }
+
+        /**
+         * One family, as a way into it.
+         *
+         * @param owned how many of it this player has, and how many there are - the number
+         *     somebody actually wants from a menu they have not opened yet
+         */
+        public record Category(
+                String id,
+                String name,
+                String icon,
+                int slot,
+                int owned,
+                int total) {
+
+            public Category {
+                Objects.requireNonNull(id, "id");
+                Objects.requireNonNull(name, "name");
+                Objects.requireNonNull(icon, "icon");
+            }
         }
 
         /**

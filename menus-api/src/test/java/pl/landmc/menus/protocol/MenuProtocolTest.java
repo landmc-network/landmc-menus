@@ -327,8 +327,11 @@ class MenuProtocolTest {
     @DisplayName("a cosmetics menu comes back as it went out")
     void roundTripsCosmetics() {
         MenuPayload.Cosmetics original = new MenuPayload.Cosmetics(
+                "PARTICLE",
                 140L,
                 Map.of("PARTICLE", "flame", "GLOW", "red"),
+                List.of(new MenuPayload.Cosmetics.Category(
+                        "PARTICLE", "<gold>Cząsteczki", "BLAZE_POWDER", 11, 2, 7)),
                 List.of(
                         new MenuPayload.Cosmetics.Offer(
                                 "flame", "PARTICLE", "<gold>Płomienie", "BLAZE_POWDER",
@@ -338,6 +341,17 @@ class MenuProtocolTest {
                                 28, 200L, false)));
 
         assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+
+        // The way in carries the categories and no offers, and has to survive the same trip.
+        MenuPayload.Cosmetics index = new MenuPayload.Cosmetics(
+                "", 140L, Map.of(),
+                List.of(new MenuPayload.Cosmetics.Category(
+                        "GLOW", "<red>Poświaty", "RED_DYE", 15, 0, 7)),
+                List.of());
+
+        MenuPayload decoded = MenuProtocol.decodePayload(MenuProtocol.encode(index));
+        assertEquals(index, decoded);
+        assertTrue(((MenuPayload.Cosmetics) decoded).isIndex());
     }
 
     @Test

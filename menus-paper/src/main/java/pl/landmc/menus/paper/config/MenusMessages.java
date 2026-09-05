@@ -489,6 +489,32 @@ public class MenusMessages extends OkaeriConfig {
         public int rows = 6;
 
         @Comment("")
+        @Comment("Kafelek kategorii na pierwszym ekranie.")
+        @Comment("Placeholdery: {NAME}, {OWNED}, {TOTAL}, {BALANCE}")
+        @CustomKey("category-name")
+        public String categoryName = "{NAME}";
+
+        @CustomKey("category-lore")
+        public List<String> categoryLore = List.of(
+                "<gray>Posiadasz: <white>{OWNED}</white><gray>/<white>{TOTAL}",
+                "",
+                "<yellow>Kliknij, aby otworzyć.");
+
+        @Comment("")
+        @Comment("Powrot do wyboru kategorii.")
+        @CustomKey("back-slot")
+        public int backSlot = 49;
+
+        @CustomKey("back-icon")
+        public String backIcon = "ARROW";
+
+        @CustomKey("back-name")
+        public String backName = "<yellow>Powrót";
+
+        @CustomKey("back-lore")
+        public List<String> backLore = List.of("<gray>Wróć do wyboru kategorii.");
+
+        @Comment("")
         @Comment("Nazwa kafelka. Sama nazwa dodatku, material i miejsce przychodza ze sklepu.")
         @Comment("Placeholdery: {NAME}, {PRICE}, {BALANCE}, {MISSING}")
         @CustomKey("offer-name")
