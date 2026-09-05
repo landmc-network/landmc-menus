@@ -55,10 +55,10 @@ public class MenusMessages extends OkaeriConfig {
         ServersSection section = new ServersSection();
         section.title = "<dark_gray>Podserwery";
         section.rows = 1;
-        section.serverCurrentLore = List.of(
-                "<gray>Graczy: <white>{ONLINE}",
-                "",
-                "<red>Znajdujesz się już na tym serwerze!");
+        // The old server drew the hubs as dyes and turned the one you were standing on grey.
+        section.serverCurrentIcon = "GRAY_DYE";
+        // One row of hubs and nothing else; the sign belonged to the list of modes.
+        section.infoEnabled = false;
         return section;
     }
 
@@ -474,29 +474,34 @@ public class MenusMessages extends OkaeriConfig {
     /** {@code /serwery} */
     public static class ServersSection extends OkaeriConfig {
 
-        public String title = "<dark_gray>Serwery";
+        public String title = "<dark_gray>Lista serwerów";
 
         @Comment("")
-        public int rows = 3;
+        public int rows = 6;
 
         @Comment("")
+        @Comment("Nazwa kafelka. Nazwa i lore serwera przychodza z proxy - tam sa ustawiane,")
+        @Comment("bo tam jest lista serwerow. Tutaj jest tylko to, co wyglada tak samo")
+        @Comment("dla kazdego z nich.")
         @Comment("Placeholdery: {SERVER}, {ONLINE}")
         @CustomKey("server-name")
-        public String serverName = "<green>{SERVER}";
-
-        @CustomKey("server-lore")
-        public List<String> serverLore = List.of(
-                "<gray>Graczy: <white>{ONLINE}",
-                "",
-                "<gray>Kliknij, aby dołączyć.");
+        public String serverName = "{SERVER}";
 
         @Comment("")
-        @Comment("Serwer, na ktorym gracz juz jest.")
-        @CustomKey("server-current-lore")
-        public List<String> serverCurrentLore = List.of(
-                "<gray>Graczy: <white>{ONLINE}",
-                "",
-                "<green>Jesteś tutaj.");
+        @Comment("Serwer, na ktorym gracz juz jest. Nazwa idzie tu bez kolorow serwera,")
+        @Comment("zeby czerwien byla widoczna - tak samo robil stary LandMC.")
+        @CustomKey("server-current-name")
+        public String serverCurrentName = "<red>{SERVER}";
+
+        @Comment("")
+        @Comment("Ta linia zastepuje ostatnia linie lore serwera, na ktorym gracz stoi.")
+        @CustomKey("server-current-line")
+        public String serverCurrentLine = "<red>Znajdujesz się już na tym serwerze!";
+
+        @Comment("")
+        @Comment("Material kafelka aktualnego serwera. Puste = ten sam, co zwykle.")
+        @CustomKey("server-current-icon")
+        public String serverCurrentIcon = "";
 
         @Comment("")
         @Comment("Serwer, ktorego proxy nie moglo dosiegnac.")
@@ -505,5 +510,23 @@ public class MenusMessages extends OkaeriConfig {
 
         @CustomKey("server-offline-lore")
         public List<String> serverOfflineLore = List.of("<gray>Chwilowo niedostępny.");
+
+        @Comment("")
+        @Comment("Tabliczka nad lista, ta sama co na starym LandMC.")
+        @CustomKey("info-enabled")
+        public boolean infoEnabled = true;
+
+        @CustomKey("info-slot")
+        public int infoSlot = 4;
+
+        @CustomKey("info-icon")
+        public String infoIcon = "OAK_SIGN";
+
+        @CustomKey("info-name")
+        public String infoName = "<green>Wybór trybu";
+
+        @CustomKey("info-lore")
+        public List<String> infoLore = List.of(
+                "<gray>Wybierz serwer i zacznij swoją przygodę!");
     }
 }

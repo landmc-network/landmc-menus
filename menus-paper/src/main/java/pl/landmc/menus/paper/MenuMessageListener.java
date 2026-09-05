@@ -18,6 +18,7 @@ import pl.landmc.menus.paper.menu.ServersMenu;
 import pl.landmc.menus.paper.menu.StatisticsMenu;
 import pl.landmc.menus.paper.menu.VisualRanksMenu;
 import pl.landmc.menus.paper.menu.ShopMenu;
+import pl.landmc.menus.protocol.MenuKind;
 import pl.landmc.menus.protocol.MenuPayload;
 import pl.landmc.menus.protocol.MenuProtocol;
 import pl.landmc.menus.protocol.MenuProtocolException;
@@ -100,11 +101,13 @@ public final class MenuMessageListener implements PluginMessageListener {
             case MenuPayload.Punishments punishments -> new PunishmentsMenu(
                     punishments, this.messages.punishments, this.style, this.zone);
             case MenuPayload.Servers servers -> new ServersMenu(
-                    servers, this.messages.servers, this.style, this.channel);
+                    servers, this.messages.servers, this.style, this.channel, MenuKind.SERVERS);
             // Drawn by the same menu with different words: a lobby list and a server list look
-            // alike and read differently.
+            // alike and read differently. The kind travels with it so a click on a hub is
+            // answered by whoever owns the hubs, not by whoever owns the modes.
             case MenuPayload.Lobbies lobbies -> new ServersMenu(
-                    lobbies.asServers(), this.messages.lobbies, this.style, this.channel);
+                    lobbies.asServers(), this.messages.lobbies, this.style, this.channel,
+                    MenuKind.LOBBIES);
             case MenuPayload.Profile profile -> new ProfileMenu(
                     profile, this.messages, this.style, this.channel);
             case MenuPayload.Shop shop -> new ShopMenu(

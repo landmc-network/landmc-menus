@@ -205,6 +205,16 @@ public final class MenuProtocol {
             out.writeUTF(server.displayName());
             out.writeInt(server.online());
             out.writeBoolean(server.reachable());
+            out.writeInt(server.slot());
+            out.writeUTF(server.icon());
+            writeLines(out, server.lore());
+        }
+    }
+
+    private static void writeLines(DataOutputStream out, List<String> lines) throws IOException {
+        out.writeInt(lines.size());
+        for (String line : lines) {
+            out.writeUTF(line);
         }
     }
 
@@ -412,10 +422,27 @@ public final class MenuProtocol {
         List<MenuPayload.Servers.Server> servers = new ArrayList<>(count);
         for (int index = 0; index < count; index++) {
             servers.add(new MenuPayload.Servers.Server(
-                    in.readUTF(), in.readUTF(), in.readInt(), in.readBoolean()));
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readInt(),
+                    in.readBoolean(),
+                    in.readInt(),
+                    in.readUTF(),
+                    readLines(in)));
         }
 
         return new MenuPayload.Servers(current, servers);
+    }
+
+    private static List<String> readLines(DataInputStream in) throws IOException {
+        int count = readCount(in);
+
+        List<String> lines = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            lines.add(in.readUTF());
+        }
+
+        return lines;
     }
 
     /**

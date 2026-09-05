@@ -122,15 +122,34 @@ public sealed interface MenuPayload {
         }
 
         /**
+         * One tile in the list.
+         *
+         * <p>The slot, the material and the lore travel with the server rather than being
+         * decided by the menu. That is how the original read: every mode sat in a place of its
+         * own with a block that said what it was and three lines about what you would be doing
+         * there. A list that lays itself out evenly can only produce a row of identical tiles.
+         *
          * @param online how many players are on it
          * @param reachable false when the proxy could not reach it just now, so the menu can say
          *     so rather than sending somebody at a server that will refuse them
+         * @param slot where it sits, counted from the top-left of the menu
+         * @param icon the material of the tile, by name
+         * @param lore the lines under the name, with {@code {ONLINE}} still in them
          */
-        public record Server(String id, String displayName, int online, boolean reachable) {
+        public record Server(
+                String id,
+                String displayName,
+                int online,
+                boolean reachable,
+                int slot,
+                String icon,
+                List<String> lore) {
 
             public Server {
                 Objects.requireNonNull(id, "id");
                 Objects.requireNonNull(displayName, "displayName");
+                Objects.requireNonNull(icon, "icon");
+                lore = List.copyOf(Objects.requireNonNull(lore, "lore"));
             }
         }
     }

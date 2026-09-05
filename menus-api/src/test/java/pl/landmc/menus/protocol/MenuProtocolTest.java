@@ -58,8 +58,11 @@ class MenuProtocolTest {
         MenuPayload.Servers original = new MenuPayload.Servers(
                 "lobby",
                 List.of(
-                        new MenuPayload.Servers.Server("lobby", "Lobby", 42, true),
-                        new MenuPayload.Servers.Server("skyblock-1", "SkyBlock", 0, false)));
+                        new MenuPayload.Servers.Server(
+                                "lobby", "Lobby", 42, true, 22, "GRASS_BLOCK",
+                                List.of("<white>Online: <green>{ONLINE}", "")),
+                        new MenuPayload.Servers.Server(
+                                "skyblock-1", "SkyBlock", 0, false, 31, "STONE", List.of())));
 
         assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
     }
@@ -323,8 +326,12 @@ class MenuProtocolTest {
     @DisplayName("the lobby list comes back as a lobby list, not as a server list")
     void roundTripsLobbies() {
         MenuPayload.Lobbies original = new MenuPayload.Lobbies("lobby-1", List.of(
-                new MenuPayload.Servers.Server("lobby-1", "Hub #1", 12, true),
-                new MenuPayload.Servers.Server("lobby-2", "Hub #2", 3, true)));
+                new MenuPayload.Servers.Server(
+                        "lobby-1", "Hub #1", 12, true, 0, "LIME_DYE",
+                        List.of("<white>Online: <green>{ONLINE}")),
+                new MenuPayload.Servers.Server(
+                        "lobby-2", "Hub #2", 3, true, 1, "LIME_DYE",
+                        List.of("<white>Online: <green>{ONLINE}"))));
 
         MenuPayload decoded = MenuProtocol.decodePayload(MenuProtocol.encode(original));
 

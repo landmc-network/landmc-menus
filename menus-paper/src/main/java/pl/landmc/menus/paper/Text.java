@@ -54,6 +54,17 @@ public final class Text {
         return this.formatter.miniMessage().escapeTags(value);
     }
 
+    /**
+     * The same text with its colour taken off.
+     *
+     * <p>For putting a value that carries its own colour into a template that has to win - the
+     * name of the server you are standing on, which the old menu turned red. Colour inside the
+     * value would otherwise override the template's from the first tag onwards.
+     */
+    public String stripped(String value) {
+        return this.formatter.plain(this.formatter.format(value));
+    }
+
     private static String replace(String template, Map<String, String> placeholders) {
         String result = template;
         for (Map.Entry<String, String> placeholder : placeholders.entrySet()) {
