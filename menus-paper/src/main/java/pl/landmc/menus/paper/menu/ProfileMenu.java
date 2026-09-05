@@ -56,8 +56,10 @@ public final class ProfileMenu extends Menu {
         int middle = this.size() / 2;
 
         this.item(middle - 2, this.head());
+        // Left open: the friends menu replaces this one, and closing first would show the
+        // world for as long as the message takes to reach the proxy and come back.
         this.button(middle, this.friends(), (player, type) ->
-                this.send(player, MenuAction.of(MenuKind.PROFILE, "friends")));
+                this.channel.send(player, MenuAction.of(MenuKind.PROFILE, "friends")));
         this.button(middle + 2, this.premium(), (player, type) ->
                 this.send(player, MenuAction.of(MenuKind.PROFILE, "premium")));
 

@@ -49,11 +49,14 @@ public final class ShopMenu extends Menu {
     protected void redraw() {
         this.item(HEADER_SLOT, this.header());
 
+        // Left open: the shop answers this with another menu, and closing first would leave
+        // the player looking at the world for the length of one round trip to the proxy.
         this.button(RANKS_SLOT, this.ranks(), (player, type) ->
-                this.send(player, MenuAction.of(MenuKind.SHOP, "ranks")));
+                this.channel.send(player, MenuAction.of(MenuKind.SHOP, "ranks")));
 
+        // Closed: the answer to this one is a line in chat, which is behind the inventory.
         this.button(TOP_UP_SLOT, this.topUp(), (player, type) ->
-                this.send(player, MenuAction.of(MenuKind.SHOP, "topup")));
+                this.close(player, MenuAction.of(MenuKind.SHOP, "topup")));
 
         this.fill(this.style.filler());
     }
@@ -91,10 +94,8 @@ public final class ShopMenu extends Menu {
                 .build();
     }
 
-    private void send(Player player, MenuAction action) {
+    private void close(Player player, MenuAction action) {
         this.channel.send(player, action);
-        // Closed rather than left open: what happens next is another menu or a message from the
-        // proxy, and both arrive behind an inventory that is no longer true.
         player.closeInventory();
     }
 }

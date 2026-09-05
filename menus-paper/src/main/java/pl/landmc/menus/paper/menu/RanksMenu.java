@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.landmc.menus.paper.MenuChannel;
 import pl.landmc.menus.paper.config.MenusMessages;
@@ -62,12 +61,15 @@ public final class RanksMenu extends Menu {
                 continue;
             }
 
+            // Nothing is closed here. The shop answers a purchase by sending this menu again,
+            // with the rank now drawn as owned, exactly as the original redrew it in place -
+            // and closing first would show the world for the length of one round trip.
             this.button(offer.slot(), this.render(offer), (player, type) ->
-                    this.send(player, MenuAction.of(MenuKind.RANKS, "buy", offer.id())));
+                    this.channel.send(player, MenuAction.of(MenuKind.RANKS, "buy", offer.id())));
         }
 
         this.button(BACK_SLOT, this.back(), (player, type) ->
-                this.send(player, MenuAction.of(MenuKind.RANKS, "back")));
+                this.channel.send(player, MenuAction.of(MenuKind.RANKS, "back")));
 
         this.fill(this.style.filler());
     }
@@ -124,10 +126,5 @@ public final class RanksMenu extends Menu {
     private static Material material(MenuPayload.Ranks.Offer offer) {
         Material material = Material.matchMaterial(offer.icon());
         return material == null || material.isAir() ? Material.PAPER : material;
-    }
-
-    private void send(Player player, MenuAction action) {
-        this.channel.send(player, action);
-        player.closeInventory();
     }
 }
