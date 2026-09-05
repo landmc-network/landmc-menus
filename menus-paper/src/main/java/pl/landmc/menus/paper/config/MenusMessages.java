@@ -30,6 +30,9 @@ public class MenusMessages extends OkaeriConfig {
     @Comment("")
     public ServersSection servers = new ServersSection();
 
+    @Comment("")
+    public ProfileSection profile = new ProfileSection();
+
     /** Text that appears in more than one menu. */
     public static class CommonSection extends OkaeriConfig {
 
@@ -148,6 +151,55 @@ public class MenusMessages extends OkaeriConfig {
 
         @CustomKey("no-punishments-lore")
         public List<String> noPunishmentsLore = List.of("<gray>Ten gracz nie ma żadnych kar.");
+    }
+
+    /** {@code /profil} */
+    public static class ProfileSection extends OkaeriConfig {
+
+        @Comment("Placeholder: {PLAYER}")
+        public String title = "<dark_gray>Profil - {PLAYER}";
+
+        @Comment("")
+        public int rows = 3;
+
+        @Comment("")
+        @Comment("Placeholdery: {PLAYER}, {RANK}, {SERVER}")
+        @CustomKey("player-name")
+        public String playerName = "<green>{PLAYER}";
+
+        @CustomKey("player-lore")
+        public List<String> playerLore = List.of(
+                "<gray>Ranga: <white>{RANK}",
+                "<gray>Serwer: <white>{SERVER}");
+
+        @Comment("")
+        @Comment("Gdy siec nie ma systemu rang albo gracz nie ma zadnej.")
+        @CustomKey("no-rank")
+        public String noRank = "brak";
+
+        @Comment("")
+        @Comment("Placeholdery: {FRIENDS}, {REQUESTS}")
+        @CustomKey("friends-name")
+        public String friendsName = "<green>Znajomi <white>({FRIENDS})";
+
+        @CustomKey("friends-lore")
+        public List<String> friendsLore = List.of(
+                "<gray>Oczekujące zaproszenia: <white>{REQUESTS}",
+                "",
+                "<gray>Kliknij, aby otworzyć listę.");
+
+        @Comment("")
+        @CustomKey("premium-name")
+        public String premiumName = "<green>Logowanie premium";
+
+        @CustomKey("premium-lore")
+        public List<String> premiumLore = List.of(
+                "<gray>Wejście kontem premium, bez hasła.",
+                "",
+                "<red>Uwaga: <gray>po włączeniu wejdziesz",
+                "<gray>tylko z kontem premium Mojanga.",
+                "",
+                "<gray>Kliknij, aby sprawdzić i przełączyć.");
     }
 
     /** {@code /serwery} */

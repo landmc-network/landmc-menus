@@ -65,6 +65,19 @@ class MenuProtocolTest {
     }
 
     @Test
+    @DisplayName("a profile comes back as it went out")
+    void roundTripsAProfile() {
+        MenuPayload.Profile original = new MenuPayload.Profile(
+                "Crispi", "Administrator", 12, 3, "lobby");
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+
+        // A network with no rank system sends an empty rank rather than leaving the field out.
+        MenuPayload.Profile plain = new MenuPayload.Profile("Anna", "", 0, 0, "");
+        assertEquals(plain, MenuProtocol.decodePayload(MenuProtocol.encode(plain)));
+    }
+
+    @Test
     @DisplayName("an empty list is a valid menu, not an error")
     void roundTripsAnEmptyList() {
         // Somebody with no friends still opens the menu; it just says so.
@@ -200,6 +213,7 @@ class MenuProtocolTest {
         assertEquals(1, MenuKind.FRIENDS.id());
         assertEquals(2, MenuKind.PUNISHMENTS.id());
         assertEquals(3, MenuKind.SERVERS.id());
+        assertEquals(4, MenuKind.PROFILE.id());
 
         for (MenuKind kind : MenuKind.values()) {
             assertEquals(kind, MenuKind.byId(kind.id()).orElseThrow());

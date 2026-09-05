@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import pl.landmc.menus.paper.config.MenusMessages;
 import pl.landmc.menus.paper.menu.FriendsMenu;
 import pl.landmc.menus.paper.menu.MenuStyle;
+import pl.landmc.menus.paper.menu.ProfileMenu;
 import pl.landmc.menus.paper.menu.PunishmentsMenu;
 import pl.landmc.menus.paper.menu.ServersMenu;
 import pl.landmc.menus.protocol.MenuPayload;
@@ -96,6 +97,8 @@ public final class MenuMessageListener implements PluginMessageListener {
                     punishments, this.messages.punishments, this.style, this.zone);
             case MenuPayload.Servers servers -> new ServersMenu(
                     servers, this.messages.servers, this.style, this.channel);
+            case MenuPayload.Profile profile -> new ProfileMenu(
+                    profile, this.messages.profile, this.style, this.channel);
         };
 
         // Paper hands plugin messages to listeners on the main thread, which is where a menu

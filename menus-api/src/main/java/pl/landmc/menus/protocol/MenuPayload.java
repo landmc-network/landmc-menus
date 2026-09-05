@@ -75,6 +75,39 @@ public sealed interface MenuPayload {
         }
     }
 
+    /**
+     * A player's own profile: who the network thinks they are.
+     *
+     * <p>Counts rather than lists. The profile is a summary with buttons that open the real
+     * menus, so sending the friend list here as well would send it twice - once for the number
+     * on the tile and once when the tile is clicked.
+     *
+     * <p>What is here is what the sender knows. Whether the player logs in with a password or
+     * through Mojang is the login plugin's business and lives in its table, so it is deliberately
+     * absent rather than guessed at - the profile offers a way into that setting instead, and
+     * the command behind it reports its own state.
+     *
+     * @param rank what their rank is called, empty when the network has no rank system running
+     */
+    record Profile(
+            String playerName,
+            String rank,
+            int friends,
+            int pendingRequests,
+            String currentServer) implements MenuPayload {
+
+        public Profile {
+            Objects.requireNonNull(playerName, "playerName");
+            Objects.requireNonNull(rank, "rank");
+            Objects.requireNonNull(currentServer, "currentServer");
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.PROFILE;
+        }
+    }
+
     /** The servers a player may move to. */
     record Servers(String currentServer, List<Server> servers) implements MenuPayload {
 

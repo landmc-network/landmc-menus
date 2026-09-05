@@ -7,7 +7,9 @@ public enum MenuKind {
 
     FRIENDS(1),
     PUNISHMENTS(2),
-    SERVERS(3);
+    SERVERS(3),
+
+    PROFILE(4);
 
     private final int id;
 

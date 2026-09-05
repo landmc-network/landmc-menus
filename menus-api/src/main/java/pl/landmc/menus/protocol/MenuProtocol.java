@@ -59,6 +59,7 @@ public final class MenuProtocol {
                 case MenuPayload.Friends friends -> writeFriends(out, friends);
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
+                case MenuPayload.Profile profile -> writeProfile(out, profile);
             }
         }
         catch (IOException exception) {
@@ -119,6 +120,16 @@ public final class MenuProtocol {
         }
     }
 
+    private static void writeProfile(DataOutputStream out, MenuPayload.Profile payload)
+            throws IOException {
+
+        out.writeUTF(payload.playerName());
+        out.writeUTF(payload.rank());
+        out.writeInt(payload.friends());
+        out.writeInt(payload.pendingRequests());
+        out.writeUTF(payload.currentServer());
+    }
+
     private static void writeServers(DataOutputStream out, MenuPayload.Servers payload)
             throws IOException {
 
@@ -153,6 +164,7 @@ public final class MenuProtocol {
                 case FRIENDS -> readFriends(in);
                 case PUNISHMENTS -> readPunishments(in);
                 case SERVERS -> readServers(in);
+                case PROFILE -> readProfile(in);
             };
         }
         catch (IOException exception) {
@@ -245,6 +257,15 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.Punishments(subject, punishments);
+    }
+
+    private static MenuPayload readProfile(DataInputStream in) throws IOException {
+        return new MenuPayload.Profile(
+                in.readUTF(),
+                in.readUTF(),
+                Math.max(0, in.readInt()),
+                Math.max(0, in.readInt()),
+                in.readUTF());
     }
 
     private static MenuPayload readServers(DataInputStream in) throws IOException {
