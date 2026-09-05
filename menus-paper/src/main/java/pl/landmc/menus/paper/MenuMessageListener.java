@@ -12,6 +12,7 @@ import pl.landmc.menus.paper.config.MenusMessages;
 import pl.landmc.menus.paper.menu.FriendsMenu;
 import pl.landmc.menus.paper.menu.MenuStyle;
 import pl.landmc.menus.paper.menu.ProfileMenu;
+import pl.landmc.menus.paper.menu.DailyMenu;
 import pl.landmc.menus.paper.menu.PunishMenu;
 import pl.landmc.menus.paper.menu.PunishmentsMenu;
 import pl.landmc.menus.paper.menu.RanksMenu;
@@ -105,6 +106,8 @@ public final class MenuMessageListener implements PluginMessageListener {
                     punishments, this.messages.punishments, this.style, this.zone);
             case MenuPayload.Punish punish -> new PunishMenu(
                     punish, this.messages.punish, this.style, this.channel);
+            case MenuPayload.Daily daily -> new DailyMenu(
+                    daily, this.messages.daily, this.style, this.channel);
             case MenuPayload.Cosmetics cosmetics -> new CosmeticsMenu(
                     cosmetics, this.messages.cosmetics, this.style, this.channel);
             case MenuPayload.Report report -> new ReportMenu(

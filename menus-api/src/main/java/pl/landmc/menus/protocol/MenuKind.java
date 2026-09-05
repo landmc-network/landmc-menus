@@ -31,7 +31,8 @@ public enum MenuKind {
 
     /** Particles and glow, bought with diamonds and worn. */
     COSMETICS(11),
-    PUNISH(12);
+    PUNISH(12),
+    DAILY(13);
 
     private final int id;
 

@@ -25,6 +25,9 @@ public class MenusMessages extends OkaeriConfig {
     public FriendsSection friends = new FriendsSection();
 
     @Comment("")
+    public DailySection daily = new DailySection();
+
+    @Comment("")
     public PunishSection punish = new PunishSection();
 
     @Comment("")
@@ -164,6 +167,62 @@ public class MenusMessages extends OkaeriConfig {
      * records punishments, so the menu and the punishment cannot describe the same thing
      * differently.
      */
+    /**
+     * Nagroda dzienna: siedem dni pod rzad.
+     *
+     * <p>Rysowane sa wszystkie siedem, nie tylko dzisiejszy. Gracz decydujacy, czy wroci jutro,
+     * decyduje o jutrzejszym kafelku - menu z jednym byloby przyciskiem, a nie powodem.
+     */
+    public static class DailySection extends OkaeriConfig {
+
+        @Comment("Placeholder: {STREAK} - ile dni z rzedu.")
+        public String title = "<dark_gray>Nagroda dzienna";
+
+        @Comment("")
+        public int rows = 5;
+
+        @Comment("")
+        @Comment("Gdzie stoja kafelki kolejnych dni. Siedem miejsc, po jednym na dzien:")
+        @Comment("piec w gornym rzedzie i dwa pod spodem, zeby siodmy dzien nie ginal w rogu.")
+        public List<Integer> slots = List.of(10, 11, 12, 13, 14, 21, 23);
+
+        @Comment("")
+        @Comment("Materialy kafelka wedlug stanu.")
+        @CustomKey("claimed-material")
+        public String claimedMaterial = "LIME_STAINED_GLASS_PANE";
+
+        @CustomKey("today-material")
+        public String todayMaterial = "CHEST";
+
+        @CustomKey("locked-material")
+        public String lockedMaterial = "GRAY_STAINED_GLASS_PANE";
+
+        @Comment("")
+        @Comment("Nazwa kafelka. Placeholdery: {DAY}, {COINS}, {DIAMONDS}, {STREAK}")
+        @CustomKey("day-name")
+        public String dayName = "<green>Dzień <white>{DAY}";
+
+        @Comment("")
+        @Comment("Trzy stany, trzy rozne zdania.")
+        @CustomKey("day-claimed-lore")
+        public List<String> dayClaimedLore = List.of(
+                "<gray>Nagroda: <gold>{COINS} monet <dark_gray>+ <aqua>{DIAMONDS}❖",
+                "",
+                "<green>Odebrane.");
+
+        @CustomKey("day-today-lore")
+        public List<String> dayTodayLore = List.of(
+                "<gray>Nagroda: <gold>{COINS} monet <dark_gray>+ <aqua>{DIAMONDS}❖",
+                "",
+                "<yellow>Kliknij, aby odebrać.");
+
+        @CustomKey("day-locked-lore")
+        public List<String> dayLockedLore = List.of(
+                "<gray>Nagroda: <gold>{COINS} monet <dark_gray>+ <aqua>{DIAMONDS}❖",
+                "",
+                "<dark_gray>Wróć za <white>{DAY}<dark_gray> dzień serii.");
+    }
+
     public static class PunishSection extends OkaeriConfig {
 
         @Comment("Placeholder: {PLAYER}")

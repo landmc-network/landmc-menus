@@ -61,6 +61,7 @@ public final class MenuProtocol {
                 case MenuPayload.Friends friends -> writeFriends(out, friends);
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
                 case MenuPayload.Punish punish -> writePunish(out, punish);
+                case MenuPayload.Daily daily -> writeDaily(out, daily);
                 case MenuPayload.Cosmetics cosmetics -> writeCosmetics(out, cosmetics);
                 case MenuPayload.Report report -> writeReport(out, report);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
@@ -110,6 +111,21 @@ public final class MenuProtocol {
             out.writeUTF(friend.name());
             out.writeBoolean(friend.online());
             out.writeUTF(friend.server());
+        }
+    }
+
+    private static void writeDaily(DataOutputStream out, MenuPayload.Daily payload)
+            throws IOException {
+
+        out.writeInt(payload.streak());
+        out.writeInt(payload.claimable());
+        out.writeInt(payload.days().size());
+
+        for (MenuPayload.Daily.Day day : payload.days()) {
+            out.writeInt(day.day());
+            out.writeLong(day.coins());
+            out.writeLong(day.diamonds());
+            out.writeUTF(day.state());
         }
     }
 
@@ -310,6 +326,7 @@ public final class MenuProtocol {
                 case FRIENDS -> readFriends(in);
                 case PUNISHMENTS -> readPunishments(in);
                 case PUNISH -> readPunish(in);
+                case DAILY -> readDaily(in);
                 case COSMETICS -> readCosmetics(in);
                 case REPORT -> readReport(in);
                 case SERVERS -> readServers(in);
@@ -392,6 +409,23 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.Friends(friends, Math.max(0, pending));
+    }
+
+    private static MenuPayload readDaily(DataInputStream in) throws IOException {
+        int streak = Math.max(0, in.readInt());
+        int claimable = Math.max(0, in.readInt());
+        int count = readCount(in);
+
+        List<MenuPayload.Daily.Day> days = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            days.add(new MenuPayload.Daily.Day(
+                    in.readInt(),
+                    Math.max(0L, in.readLong()),
+                    Math.max(0L, in.readLong()),
+                    in.readUTF()));
+        }
+
+        return new MenuPayload.Daily(streak, claimable, days);
     }
 
     private static MenuPayload readPunish(DataInputStream in) throws IOException {

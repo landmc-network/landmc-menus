@@ -101,6 +101,45 @@ public sealed interface MenuPayload {
         }
     }
 
+    /**
+     * The daily reward: a week of days, and which of them is today's.
+     *
+     * <p>Every day travels, not only the one that can be taken. What makes somebody come back
+     * tomorrow is seeing what tomorrow is worth, and a menu that showed one tile would be a
+     * button rather than a reason.
+     *
+     * @param streak how many days in a row have been taken in this run
+     * @param claimable which day can be taken now, or nought when today's has been taken
+     */
+    record Daily(int streak, int claimable, List<Day> days) implements MenuPayload {
+
+        public Daily {
+            days = List.copyOf(Objects.requireNonNull(days, "days"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.DAILY;
+        }
+
+        /**
+         * One day of the week, and what it holds.
+         *
+         * <p>The amounts travel rather than being looked up where the menu is drawn, for the
+         * same reason every other payload here carries what it shows: the side that pays is the
+         * side that knows, and a backend with its own copy of the numbers is a backend that can
+         * promise something the shop will not hand over.
+         *
+         * @param state one of {@code CLAIMED}, {@code TODAY} or {@code LOCKED}
+         */
+        public record Day(int day, long coins, long diamonds, String state) {
+
+            public Day {
+                Objects.requireNonNull(state, "state");
+            }
+        }
+    }
+
     record Punishments(String subject, List<Punishment> punishments) implements MenuPayload {
 
         public Punishments {
