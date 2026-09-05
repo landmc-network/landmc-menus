@@ -27,8 +27,8 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
     private final MenusMessages messages;
     private final MenuStyle style;
     private final MenuChannel channel;
-    /** Where the old server said so when there was nobody to list. */
-    private static final int EMPTY_SLOT = 9;
+    /** Nine squares to a row, which is what makes a middle worth working out. */
+    private static final int WIDTH = 9;
 
     private final int pendingRequests;
 
@@ -90,10 +90,8 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
         this.tabs();
 
         if (this.isEmpty()) {
-            // Slot 9, where the old server said so - the first square under the tab strip,
-            // where the list itself would have started.
             this.item(
-                    EMPTY_SLOT,
+                    this.middle(),
                     Items.of(Material.BOOK)
                             .name(this.style.text().of(this.messages.friends.noFriends))
                             .lore(this.style.text().ofAll(this.messages.friends.noFriendsLore, Map.of()))
@@ -122,6 +120,17 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
         }
 
         this.fill(this.style.filler());
+    }
+
+    /**
+     * The middle square of the menu.
+     *
+     * <p>Worked out from the row and the column rather than as half the size: half of
+     * fifty-four is twenty-seven, which is the left edge of the middle row and not its middle.
+     * That is where the "no friends" tile sat until somebody looked at it.
+     */
+    private int middle() {
+        return (this.size() / WIDTH / 2) * WIDTH + WIDTH / 2;
     }
 
     /**
