@@ -25,6 +25,9 @@ public class MenusMessages extends OkaeriConfig {
     public FriendsSection friends = new FriendsSection();
 
     @Comment("")
+    public PunishSection punish = new PunishSection();
+
+    @Comment("")
     public PunishmentsSection punishments = new PunishmentsSection();
 
     @Comment("")
@@ -154,6 +157,42 @@ public class MenusMessages extends OkaeriConfig {
     }
 
     /** {@code /kary} */
+    /**
+     * The screen a staff member picks a punishment from.
+     *
+     * <p>Nothing here says what a click does - the words for that come from the side that
+     * records punishments, so the menu and the punishment cannot describe the same thing
+     * differently.
+     */
+    public static class PunishSection extends OkaeriConfig {
+
+        @Comment("Placeholder: {PLAYER}")
+        public String title = "<dark_gray>Wybór kary <dark_gray>- {PLAYER}";
+
+        @Comment("")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Placeholdery: {NAME}, {PLAYER}")
+        @CustomKey("option-name")
+        public String optionName = "{NAME}";
+
+        @Comment("")
+        @Comment("Placeholdery: {NAME}, {PLAYER}, {LEFT}, {RIGHT}, {SHIFT_RIGHT}")
+        @CustomKey("option-lore")
+        public List<String> optionLore = List.of(
+                "<gray>Kara dla gracza <white>{PLAYER}</white>:",
+                "",
+                "<yellow>LPM <dark_gray>» <gray>{LEFT}",
+                "<yellow>PPM <dark_gray>» <gray>{RIGHT}",
+                "<yellow>Shift + PPM <dark_gray>» <gray>{SHIFT_RIGHT}");
+
+        @Comment("")
+        @Comment("Co pisze przy kliknieciu, ktore nic nie robi.")
+        @CustomKey("option-nothing")
+        public String optionNothing = "<dark_gray>nic";
+    }
+
     public static class PunishmentsSection extends OkaeriConfig {
 
         @Comment("Placeholder: {PLAYER}")

@@ -60,6 +60,7 @@ public final class MenuProtocol {
             switch (payload) {
                 case MenuPayload.Friends friends -> writeFriends(out, friends);
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
+                case MenuPayload.Punish punish -> writePunish(out, punish);
                 case MenuPayload.Cosmetics cosmetics -> writeCosmetics(out, cosmetics);
                 case MenuPayload.Report report -> writeReport(out, report);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
@@ -109,6 +110,23 @@ public final class MenuProtocol {
             out.writeUTF(friend.name());
             out.writeBoolean(friend.online());
             out.writeUTF(friend.server());
+        }
+    }
+
+    private static void writePunish(DataOutputStream out, MenuPayload.Punish payload)
+            throws IOException {
+
+        out.writeUTF(payload.subject());
+        out.writeInt(payload.options().size());
+
+        for (MenuPayload.Punish.Option option : payload.options()) {
+            out.writeUTF(option.id());
+            out.writeInt(option.slot());
+            out.writeUTF(option.icon());
+            out.writeUTF(option.name());
+            out.writeUTF(option.left());
+            out.writeUTF(option.right());
+            out.writeUTF(option.shiftRight());
         }
     }
 
@@ -291,6 +309,7 @@ public final class MenuProtocol {
             return switch (kind) {
                 case FRIENDS -> readFriends(in);
                 case PUNISHMENTS -> readPunishments(in);
+                case PUNISH -> readPunish(in);
                 case COSMETICS -> readCosmetics(in);
                 case REPORT -> readReport(in);
                 case SERVERS -> readServers(in);
@@ -373,6 +392,25 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.Friends(friends, Math.max(0, pending));
+    }
+
+    private static MenuPayload readPunish(DataInputStream in) throws IOException {
+        String subject = in.readUTF();
+        int count = readCount(in);
+
+        List<MenuPayload.Punish.Option> options = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            options.add(new MenuPayload.Punish.Option(
+                    in.readUTF(),
+                    in.readInt(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF()));
+        }
+
+        return new MenuPayload.Punish(subject, options);
     }
 
     private static MenuPayload readPunishments(DataInputStream in) throws IOException {

@@ -44,6 +44,63 @@ public sealed interface MenuPayload {
     }
 
     /** Somebody's punishment history, newest first. */
+    /**
+     * The screen a staff member picks a punishment from.
+     *
+     * <p>What each tile does is decided where punishments are recorded, not here: this carries
+     * the words to put on it and an identifier to send back. A click that named its own
+     * duration and reason would be a client telling the proxy how long to ban somebody for.
+     *
+     * <p>Who is being punished is not in the click either. It is in this payload so the menu can
+     * say the name, and the proxy remembers it separately - the same rule the report menu
+     * follows, and for the same reason.
+     *
+     * @param subject whose name the title says
+     */
+    record Punish(String subject, List<Option> options) implements MenuPayload {
+
+        public Punish {
+            Objects.requireNonNull(subject, "subject");
+            options = List.copyOf(Objects.requireNonNull(options, "options"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.PUNISH;
+        }
+
+        /**
+         * One tile, and what its three clicks are called.
+         *
+         * <p>Three, because that is how the old server's menu worked: a left click warned, a
+         * right click banned and a shift-right click kicked, all for the same offence. An empty
+         * label means that click does nothing, and the tile says so rather than looking like it
+         * should work.
+         *
+         * @param left what a left click is called, or empty when there is nothing on it
+         * @param right the same for a right click
+         * @param shiftRight the same for shift and a right click
+         */
+        public record Option(
+                String id,
+                int slot,
+                String icon,
+                String name,
+                String left,
+                String right,
+                String shiftRight) {
+
+            public Option {
+                Objects.requireNonNull(id, "id");
+                Objects.requireNonNull(icon, "icon");
+                Objects.requireNonNull(name, "name");
+                left = left == null ? "" : left;
+                right = right == null ? "" : right;
+                shiftRight = shiftRight == null ? "" : shiftRight;
+            }
+        }
+    }
+
     record Punishments(String subject, List<Punishment> punishments) implements MenuPayload {
 
         public Punishments {

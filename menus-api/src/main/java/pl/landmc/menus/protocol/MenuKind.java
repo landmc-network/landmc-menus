@@ -30,7 +30,8 @@ public enum MenuKind {
     REPORT(10),
 
     /** Particles and glow, bought with diamonds and worn. */
-    COSMETICS(11);
+    COSMETICS(11),
+    PUNISH(12);
 
     private final int id;
 
