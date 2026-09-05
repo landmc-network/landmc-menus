@@ -6,7 +6,7 @@
 [versions]
 
 # Must match the version published by landmc-platform.
-landmc-platform = "1.6.0"
+landmc-platform = "1.7.0"
 
 # Both servers publish Java 25 bytecode, which is why the plugin modules compile with
 # --release 25.
