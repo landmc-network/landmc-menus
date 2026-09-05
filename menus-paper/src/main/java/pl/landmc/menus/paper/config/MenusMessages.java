@@ -337,7 +337,7 @@ public class MenusMessages extends OkaeriConfig {
         public String rankName = "<green>Ranga <dark_gray>({RANK}<dark_gray>)";
 
         @Comment("")
-        @Comment("Opis rangi. Placeholdery: {RANK}, {PRICE}, {COMMAND}, {STATE}")
+        @Comment("Opis rangi. Placeholdery: {RANK}, {PRICE}, {COMMAND}, {STATE}, {DURATION}")
         @CustomKey("rank-lore")
         public List<String> rankLore = List.of(
                 "<gray>Ranga, dzięki której wyróżnisz się na czacie!",
@@ -347,9 +347,22 @@ public class MenusMessages extends OkaeriConfig {
                 "",
                 "<white>Cena: <aqua>{PRICE}❖",
                 "",
-                "<red><bold>PAMIĘTAJ! <red>Ranga jest na <red><underlined>ZAWSZE!",
+                "{DURATION}",
                 "",
                 "{STATE}");
+
+        @Comment("")
+        @Comment("Za {DURATION} wstawiane jest jedno z tych dwoch. Zdanie o wieczystej randze")
+        @Comment("bylo na starym LandMC wpisane na sztywno w opis - i przestaje byc prawda")
+        @Comment("w chwili, w ktorej sklep zaczyna sprzedawac range na miesiac.")
+        @CustomKey("duration-permanent")
+        public String durationPermanent =
+                "<red><bold>PAMIĘTAJ! <red>Ranga jest na <red><underlined>ZAWSZE!";
+
+        @Comment("Placeholder: {DAYS}")
+        @CustomKey("duration-days")
+        public String durationDays =
+                "<red><bold>PAMIĘTAJ! <red>Ranga wygasa po <red><underlined>{DAYS} dniach!";
 
         @Comment("")
         @Comment("Ostatnia linia opisu, zaleznie od tego, na co gracza stac.")

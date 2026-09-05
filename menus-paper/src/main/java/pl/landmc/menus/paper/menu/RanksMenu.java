@@ -88,6 +88,7 @@ public final class RanksMenu extends Menu {
         placeholders.put("{COMMAND}", this.style.text().escaped(offer.infoCommand()));
         placeholders.put("{MISSING}", Long.toString(offer.missing(this.payload.balance())));
         placeholders.put("{STATE}", this.state(offer));
+        placeholders.put("{DURATION}", this.duration(offer));
 
         Items.Builder item = offer.texture().isEmpty()
                 ? Items.of(material(offer))
@@ -102,6 +103,20 @@ public final class RanksMenu extends Menu {
         }
 
         return item.build();
+    }
+
+    /**
+     * How long the rank lasts, in the shop's own words.
+     *
+     * <p>A placeholder rather than a line this class decides to add, for the same reason the
+     * state is one: whether a permanent rank says so at all, and where the sentence sits in the
+     * lore, belong to whoever writes the configuration.
+     */
+    private String duration(MenuPayload.Ranks.Offer offer) {
+        return offer.durationDays() <= 0
+                ? this.messages.durationPermanent
+                : this.messages.durationDays
+                        .replace("{DAYS}", Integer.toString(offer.durationDays()));
     }
 
     /**

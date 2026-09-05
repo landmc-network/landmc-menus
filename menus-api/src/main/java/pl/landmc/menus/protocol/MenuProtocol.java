@@ -166,6 +166,7 @@ public final class MenuProtocol {
             out.writeLong(offer.price());
             out.writeBoolean(offer.owned());
             out.writeBoolean(offer.glowing());
+            out.writeInt(offer.durationDays());
         }
     }
 
@@ -430,7 +431,10 @@ public final class MenuProtocol {
                     in.readUTF(),
                     in.readLong(),
                     in.readBoolean(),
-                    in.readBoolean()));
+                    in.readBoolean(),
+                    // Nought is permanent, and a negative number is nothing at all - reading it
+                    // as permanent is the reading that cannot mislead anybody.
+                    Math.max(0, in.readInt())));
         }
 
         // A negative balance cannot happen and would only be there to make a lore line lie.

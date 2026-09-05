@@ -262,10 +262,10 @@ class MenuProtocolTest {
         MenuPayload.Ranks original = new MenuPayload.Ranks(340L, List.of(
                 new MenuPayload.Ranks.Offer(
                         "vip", "<green>VIP", 11, "PLAYER_HEAD",
-                        "http://textures.minecraft.net/texture/1b67", "/vip", 200L, true, false),
+                        "http://textures.minecraft.net/texture/1b67", "/vip", 200L, true, false, 0),
                 new MenuPayload.Ranks.Offer(
                         "szefuncio", "<gold>SZEFUNCIO", 15, "PLAYER_HEAD", "", "/szefuncio",
-                        1000L, false, true)));
+                        1000L, false, true, 30)));
 
         assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
     }
@@ -274,7 +274,7 @@ class MenuProtocolTest {
     @DisplayName("an offer says how much more the player needs, and never a negative amount")
     void reportsWhatIsMissing() {
         MenuPayload.Ranks.Offer offer = new MenuPayload.Ranks.Offer(
-                "vip", "VIP", 11, "PLAYER_HEAD", "", "/vip", 200L, false, false);
+                "vip", "VIP", 11, "PLAYER_HEAD", "", "/vip", 200L, false, false, 0);
 
         assertEquals(200L, offer.missing(0L));
         assertEquals(60L, offer.missing(140L));

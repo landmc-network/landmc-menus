@@ -341,6 +341,10 @@ public sealed interface MenuPayload {
          * @param infoCommand the command that lists what the rank gives, as the lore says
          * @param owned true when the player already has this rank, so it is shown as theirs
          *     rather than offered for sale a second time
+         * @param durationDays how long it lasts, or nought for a rank that does not expire. A
+         *     shop that sells a month of something and does not say so is a shop somebody
+         *     argues with a month later, so the number travels with the tile rather than being
+         *     left in the seller's configuration
          */
         public record Offer(
                 String id,
@@ -351,7 +355,8 @@ public sealed interface MenuPayload {
                 String infoCommand,
                 long price,
                 boolean owned,
-                boolean glowing) {
+                boolean glowing,
+                int durationDays) {
 
             public Offer {
                 Objects.requireNonNull(id, "id");
