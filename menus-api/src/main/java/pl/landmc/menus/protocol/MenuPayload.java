@@ -108,6 +108,44 @@ public sealed interface MenuPayload {
         }
     }
 
+    /**
+     * The report menu: who is being reported, and what for.
+     *
+     * <p>The reasons travel with it rather than living in the backend's messages, for the same
+     * reason the servers do - the side that has to understand a click back is the side that
+     * should decide what can be clicked. A reason the proxy does not know is a report it cannot
+     * act on.
+     *
+     * @param subject the reported player, written the way it should be shown
+     */
+    record Report(String subject, List<Reason> reasons) implements MenuPayload {
+
+        public Report {
+            Objects.requireNonNull(subject, "subject");
+            reasons = List.copyOf(Objects.requireNonNull(reasons, "reasons"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.REPORT;
+        }
+
+        /**
+         * @param id what travels back when it is clicked
+         * @param label how the tile reads
+         * @param icon the material of the tile, by name
+         * @param slot where it sits
+         */
+        public record Reason(String id, String label, String icon, int slot) {
+
+            public Reason {
+                Objects.requireNonNull(id, "id");
+                Objects.requireNonNull(label, "label");
+                Objects.requireNonNull(icon, "icon");
+            }
+        }
+    }
+
     /** The servers a player may move to. */
     record Servers(String currentServer, List<Server> servers) implements MenuPayload {
 

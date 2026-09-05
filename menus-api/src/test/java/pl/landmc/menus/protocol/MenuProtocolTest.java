@@ -323,6 +323,19 @@ class MenuProtocolTest {
     }
 
     @Test
+    @DisplayName("a report menu comes back as it went out")
+    void roundTripsAReport() {
+        MenuPayload.Report original = new MenuPayload.Report(
+                "<gold><bold>SZEFUNCIO</bold> <white>Crispi",
+                List.of(
+                        new MenuPayload.Report.Reason(
+                                "cheaty", "<red>CHEATY", "DIAMOND_SWORD", 22),
+                        new MenuPayload.Report.Reason("spam", "<red>SPAM/FLOOD", "PAPER", 43)));
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+    }
+
+    @Test
     @DisplayName("the lobby list comes back as a lobby list, not as a server list")
     void roundTripsLobbies() {
         MenuPayload.Lobbies original = new MenuPayload.Lobbies("lobby-1", List.of(

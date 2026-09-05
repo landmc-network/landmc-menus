@@ -24,7 +24,10 @@ public enum MenuKind {
     STATISTICS(8),
 
     /** Which lobby to stand on, as the old server's "podserwery" did. */
-    LOBBIES(9);
+    LOBBIES(9),
+
+    /** The reasons somebody can be reported for. */
+    REPORT(10);
 
     private final int id;
 

@@ -35,6 +35,9 @@ public class MenusMessages extends OkaeriConfig {
     public ServersSection lobbies = lobbiesDefaults();
 
     @Comment("")
+    public ReportSection report = new ReportSection();
+
+    @Comment("")
     public ProfileSection profile = new ProfileSection();
 
     @Comment("")
@@ -469,6 +472,43 @@ public class MenusMessages extends OkaeriConfig {
                 "",
                 "<gray>Pojawią się tutaj, kiedy",
                 "<gray>ruszy rozgrywka na SkyBlocku.");
+    }
+
+    /** {@code /zglos} */
+    public static class ReportSection extends OkaeriConfig {
+
+        @Comment("Placeholder: {PLAYER}")
+        public String title = "<gray>Menu zgłoszenia";
+
+        @Comment("")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Tabliczka z nazwa zglaszanego gracza. Wazniejsza niz wyglada:")
+        @Comment("komenda bierze nick, menu otwiera sie chwile pozniej, a bez tego")
+        @Comment("gracz, ktory pomylil nick, nie ma jak tego zauwazyc przed kliknieciem.")
+        @CustomKey("subject-slot")
+        public int subjectSlot = 4;
+
+        @CustomKey("subject-icon")
+        public String subjectIcon = "OAK_SIGN";
+
+        @CustomKey("subject-name")
+        public String subjectName = "<white>Zgłaszany gracz: <green>{PLAYER}";
+
+        @CustomKey("subject-lore")
+        public List<String> subjectLore = List.of(
+                "<gray>Wybierz powód zgłoszenia poniżej.");
+
+        @Comment("")
+        @Comment("Kafelek powodu. Sam powod - nazwa, material i slot - przychodzi z proxy.")
+        @Comment("Placeholdery: {REASON}, {PLAYER}")
+        @CustomKey("reason-name")
+        public String reasonName = "<green>Zgłoś za: {REASON}";
+
+        @CustomKey("reason-lore")
+        public List<String> reasonLore = List.of(
+                "<gray>Kliknij, aby zgłosić gracza <white>{PLAYER}</white>.");
     }
 
     /** {@code /serwery} */

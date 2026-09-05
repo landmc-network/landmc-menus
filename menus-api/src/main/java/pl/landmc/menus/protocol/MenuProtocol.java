@@ -58,6 +58,7 @@ public final class MenuProtocol {
             switch (payload) {
                 case MenuPayload.Friends friends -> writeFriends(out, friends);
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
+                case MenuPayload.Report report -> writeReport(out, report);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
                 case MenuPayload.Lobbies lobbies -> writeServers(out, lobbies.asServers());
                 case MenuPayload.Profile profile -> writeProfile(out, profile);
@@ -194,6 +195,20 @@ public final class MenuProtocol {
         }
     }
 
+    private static void writeReport(DataOutputStream out, MenuPayload.Report payload)
+            throws IOException {
+
+        out.writeUTF(payload.subject());
+        out.writeInt(payload.reasons().size());
+
+        for (MenuPayload.Report.Reason reason : payload.reasons()) {
+            out.writeUTF(reason.id());
+            out.writeUTF(reason.label());
+            out.writeUTF(reason.icon());
+            out.writeInt(reason.slot());
+        }
+    }
+
     private static void writeServers(DataOutputStream out, MenuPayload.Servers payload)
             throws IOException {
 
@@ -237,6 +252,7 @@ public final class MenuProtocol {
             return switch (kind) {
                 case FRIENDS -> readFriends(in);
                 case PUNISHMENTS -> readPunishments(in);
+                case REPORT -> readReport(in);
                 case SERVERS -> readServers(in);
                 case LOBBIES -> readLobbies(in);
                 case PROFILE -> readProfile(in);
@@ -413,6 +429,19 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.Statistics(subject, entries);
+    }
+
+    private static MenuPayload readReport(DataInputStream in) throws IOException {
+        String subject = in.readUTF();
+        int count = readCount(in);
+
+        List<MenuPayload.Report.Reason> reasons = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            reasons.add(new MenuPayload.Report.Reason(
+                    in.readUTF(), in.readUTF(), in.readUTF(), in.readInt()));
+        }
+
+        return new MenuPayload.Report(subject, reasons);
     }
 
     private static MenuPayload readServers(DataInputStream in) throws IOException {
