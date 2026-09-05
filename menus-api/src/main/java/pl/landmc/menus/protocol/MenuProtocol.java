@@ -6,6 +6,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,6 +60,7 @@ public final class MenuProtocol {
             switch (payload) {
                 case MenuPayload.Friends friends -> writeFriends(out, friends);
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
+                case MenuPayload.Cosmetics cosmetics -> writeCosmetics(out, cosmetics);
                 case MenuPayload.Report report -> writeReport(out, report);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
                 case MenuPayload.Lobbies lobbies -> writeServers(out, lobbies.asServers());
@@ -195,6 +198,29 @@ public final class MenuProtocol {
         }
     }
 
+    private static void writeCosmetics(DataOutputStream out, MenuPayload.Cosmetics payload)
+            throws IOException {
+
+        out.writeLong(payload.balance());
+
+        out.writeInt(payload.worn().size());
+        for (Map.Entry<String, String> worn : payload.worn().entrySet()) {
+            out.writeUTF(worn.getKey());
+            out.writeUTF(worn.getValue());
+        }
+
+        out.writeInt(payload.offers().size());
+        for (MenuPayload.Cosmetics.Offer offer : payload.offers()) {
+            out.writeUTF(offer.id());
+            out.writeUTF(offer.family());
+            out.writeUTF(offer.name());
+            out.writeUTF(offer.icon());
+            out.writeInt(offer.slot());
+            out.writeLong(offer.price());
+            out.writeBoolean(offer.owned());
+        }
+    }
+
     private static void writeReport(DataOutputStream out, MenuPayload.Report payload)
             throws IOException {
 
@@ -252,6 +278,7 @@ public final class MenuProtocol {
             return switch (kind) {
                 case FRIENDS -> readFriends(in);
                 case PUNISHMENTS -> readPunishments(in);
+                case COSMETICS -> readCosmetics(in);
                 case REPORT -> readReport(in);
                 case SERVERS -> readServers(in);
                 case LOBBIES -> readLobbies(in);
@@ -429,6 +456,31 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.Statistics(subject, entries);
+    }
+
+    private static MenuPayload readCosmetics(DataInputStream in) throws IOException {
+        long balance = in.readLong();
+
+        int wornCount = readCount(in);
+        Map<String, String> worn = new LinkedHashMap<>(wornCount);
+        for (int index = 0; index < wornCount; index++) {
+            worn.put(in.readUTF(), in.readUTF());
+        }
+
+        int count = readCount(in);
+        List<MenuPayload.Cosmetics.Offer> offers = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            offers.add(new MenuPayload.Cosmetics.Offer(
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readInt(),
+                    in.readLong(),
+                    in.readBoolean()));
+        }
+
+        return new MenuPayload.Cosmetics(balance, worn, offers);
     }
 
     private static MenuPayload readReport(DataInputStream in) throws IOException {

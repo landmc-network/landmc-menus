@@ -35,6 +35,9 @@ public class MenusMessages extends OkaeriConfig {
     public ServersSection lobbies = lobbiesDefaults();
 
     @Comment("")
+    public CosmeticsSection cosmetics = new CosmeticsSection();
+
+    @Comment("")
     public ReportSection report = new ReportSection();
 
     @Comment("")
@@ -472,6 +475,49 @@ public class MenusMessages extends OkaeriConfig {
                 "",
                 "<gray>Pojawią się tutaj, kiedy",
                 "<gray>ruszy rozgrywka na SkyBlocku.");
+    }
+
+    /** {@code /dodatki} */
+    public static class CosmeticsSection extends OkaeriConfig {
+
+        @Comment("Placeholder: {BALANCE}")
+        public String title = "<dark_gray>Dodatki <dark_gray>(<aqua>{BALANCE}❖<dark_gray>)";
+
+        @Comment("")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Nazwa kafelka. Sama nazwa dodatku, material i miejsce przychodza ze sklepu.")
+        @Comment("Placeholdery: {NAME}, {PRICE}, {BALANCE}, {MISSING}")
+        @CustomKey("offer-name")
+        public String offerName = "{NAME}";
+
+        @Comment("")
+        @Comment("Trzy stany, trzy rozne zdania: jeszcze nie kupione mowi ile kosztuje,")
+        @Comment("kupione mowi zeby zalozyc, zalozone mowi zeby zdjac.")
+        @CustomKey("offer-for-sale-lore")
+        public List<String> offerForSaleLore = List.of(
+                "<gray>Cena: <aqua>{PRICE}❖",
+                "",
+                "<yellow>Kliknij, aby kupić.");
+
+        @CustomKey("offer-too-poor-lore")
+        public List<String> offerTooPoorLore = List.of(
+                "<gray>Cena: <aqua>{PRICE}❖",
+                "",
+                "<red>Brakuje Ci <aqua>{MISSING}❖<red>.");
+
+        @CustomKey("offer-owned-lore")
+        public List<String> offerOwnedLore = List.of(
+                "<green>Posiadasz ten dodatek.",
+                "",
+                "<yellow>Kliknij, aby założyć.");
+
+        @CustomKey("offer-worn-lore")
+        public List<String> offerWornLore = List.of(
+                "<green>Założone.",
+                "",
+                "<yellow>Kliknij, aby zdjąć.");
     }
 
     /** {@code /zglos} */

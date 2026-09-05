@@ -27,7 +27,10 @@ public enum MenuKind {
     LOBBIES(9),
 
     /** The reasons somebody can be reported for. */
-    REPORT(10);
+    REPORT(10),
+
+    /** Particles and glow, bought with diamonds and worn. */
+    COSMETICS(11);
 
     private final int id;
 

@@ -1,6 +1,7 @@
 package pl.landmc.menus.protocol;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -142,6 +143,58 @@ public sealed interface MenuPayload {
                 Objects.requireNonNull(id, "id");
                 Objects.requireNonNull(label, "label");
                 Objects.requireNonNull(icon, "icon");
+            }
+        }
+    }
+
+    /**
+     * The cosmetics menu: what is on offer, what this player owns and what they are wearing.
+     *
+     * <p>One payload for every family rather than one per family. A player wears one trail and
+     * one glow at the same time, so the menu has to show both states at once - and a tile knows
+     * which family it belongs to, which is what lets the same menu draw a mixed list.
+     *
+     * @param balance what they have to spend, so a tile can say how much is missing
+     * @param worn the cosmetic worn in each family, keyed by the family's name; a family absent
+     *     from the map is one they are wearing nothing from
+     */
+    record Cosmetics(long balance, Map<String, String> worn, List<Offer> offers)
+            implements MenuPayload {
+
+        public Cosmetics {
+            worn = Map.copyOf(Objects.requireNonNull(worn, "worn"));
+            offers = List.copyOf(Objects.requireNonNull(offers, "offers"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.COSMETICS;
+        }
+
+        /**
+         * @param family which of them it belongs to, as the shop names it
+         * @param owned whether it has been bought already, which is what decides between a
+         *     price and an invitation to put it on
+         */
+        public record Offer(
+                String id,
+                String family,
+                String name,
+                String icon,
+                int slot,
+                long price,
+                boolean owned) {
+
+            public Offer {
+                Objects.requireNonNull(id, "id");
+                Objects.requireNonNull(family, "family");
+                Objects.requireNonNull(name, "name");
+                Objects.requireNonNull(icon, "icon");
+            }
+
+            /** How much more is needed, or zero when it is affordable. */
+            public long missing(long balance) {
+                return Math.max(0L, this.price - balance);
             }
         }
     }

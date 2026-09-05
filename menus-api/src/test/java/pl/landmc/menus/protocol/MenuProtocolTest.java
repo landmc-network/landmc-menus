@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -320,6 +321,23 @@ class MenuProtocolTest {
         // A tab with nothing to say is still a tab, not an error.
         MenuPayload.Statistics empty = new MenuPayload.Statistics("Crispi", List.of());
         assertEquals(empty, MenuProtocol.decodePayload(MenuProtocol.encode(empty)));
+    }
+
+    @Test
+    @DisplayName("a cosmetics menu comes back as it went out")
+    void roundTripsCosmetics() {
+        MenuPayload.Cosmetics original = new MenuPayload.Cosmetics(
+                140L,
+                Map.of("PARTICLE", "flame", "GLOW", "red"),
+                List.of(
+                        new MenuPayload.Cosmetics.Offer(
+                                "flame", "PARTICLE", "<gold>Płomienie", "BLAZE_POWDER",
+                                19, 150L, true),
+                        new MenuPayload.Cosmetics.Offer(
+                                "red", "GLOW", "<red>Czerwona poświata", "RED_DYE",
+                                28, 200L, false)));
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
     }
 
     @Test
