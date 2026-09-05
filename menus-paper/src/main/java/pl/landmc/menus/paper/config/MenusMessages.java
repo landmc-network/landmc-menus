@@ -54,6 +54,14 @@ public class MenusMessages extends OkaeriConfig {
         public String pageLore = "<gray>Strona <white>{PAGE}</white> z <white>{PAGES}</white>";
 
         @Comment("")
+        @Comment("Pasek zakladek u gory profilu i znajomych, tak jak na starym LandMC.")
+        @CustomKey("tab-profile")
+        public String tabProfile = "<green>Ogólne opcje";
+
+        @CustomKey("tab-friends")
+        public String tabFriends = "<green>Znajomi";
+
+        @Comment("")
         @Comment("Pokazywane, gdy proxy przysle menu, ktorego ta wersja pluginu nie zna.")
         @CustomKey("unsupported-menu")
         public String unsupportedMenu =
@@ -163,10 +171,12 @@ public class MenusMessages extends OkaeriConfig {
     public static class ProfileSection extends OkaeriConfig {
 
         @Comment("Placeholder: {PLAYER}")
-        public String title = "<dark_gray>Profil - {PLAYER}";
+        public String title = "<dark_gray>Twój profil";
 
         @Comment("")
-        public int rows = 3;
+        @Comment("Liczby rzedow tu nie ma celowo. Kafelki stoja w slotach ze starego LandMC")
+        @Comment("- 22, 38 i 40 - a te istnieja tylko w menu o szesciu rzedach. Mniejsze menu")
+        @Comment("upychalo je jedno na drugim i kafelek sklepu znikal pod ksiazka.")
 
         @Comment("")
         @Comment("Placeholdery: {PLAYER}, {RANK}, {SERVER}")
@@ -193,6 +203,16 @@ public class MenusMessages extends OkaeriConfig {
                 "<gray>Oczekujące zaproszenia: <white>{REQUESTS}",
                 "",
                 "<gray>Kliknij, aby otworzyć listę.");
+
+        @Comment("")
+        @Comment("Kafelek prowadzacy do sklepu rang.")
+        @CustomKey("shop-name")
+        public String shopName = "<green>Wspomóż serwer, zakup rangę!";
+
+        @CustomKey("shop-lore")
+        public List<String> shopLore = List.of(
+                "",
+                "<yellow>Kliknij, aby zobaczyć rangi w sklepie.");
 
         @Comment("")
         @CustomKey("premium-name")

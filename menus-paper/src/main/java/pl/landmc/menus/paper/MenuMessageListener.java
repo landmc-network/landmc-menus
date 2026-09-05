@@ -94,13 +94,13 @@ public final class MenuMessageListener implements PluginMessageListener {
     private void open(Player player, MenuPayload payload) {
         Menu menu = switch (payload) {
             case MenuPayload.Friends friends -> new FriendsMenu(
-                    friends, this.messages.friends, this.style, this.channel);
+                    friends, this.messages, this.style, this.channel);
             case MenuPayload.Punishments punishments -> new PunishmentsMenu(
                     punishments, this.messages.punishments, this.style, this.zone);
             case MenuPayload.Servers servers -> new ServersMenu(
                     servers, this.messages.servers, this.style, this.channel);
             case MenuPayload.Profile profile -> new ProfileMenu(
-                    profile, this.messages.profile, this.style, this.channel);
+                    profile, this.messages, this.style, this.channel);
             case MenuPayload.Shop shop -> new ShopMenu(
                     shop, this.messages.shop, this.style, this.channel);
             case MenuPayload.Ranks ranks -> new RanksMenu(

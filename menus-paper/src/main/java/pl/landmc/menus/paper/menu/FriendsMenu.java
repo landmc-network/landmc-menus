@@ -24,18 +24,18 @@ import pl.landmc.platform.paper.menu.PaginatedMenu;
  */
 public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend> {
 
-    private final MenusMessages.FriendsSection messages;
+    private final MenusMessages messages;
     private final MenuStyle style;
     private final MenuChannel channel;
     private final int pendingRequests;
 
     public FriendsMenu(
             MenuPayload.Friends payload,
-            MenusMessages.FriendsSection messages,
+            MenusMessages messages,
             MenuStyle style,
             MenuChannel channel) {
 
-        super(style.text().of(messages.title), Math.clamp(messages.rows, 1, 6), payload.friends());
+        super(style.text().of(messages.friends.title), Math.clamp(messages.friends.rows, 1, 6), payload.friends());
 
         this.messages = Objects.requireNonNull(messages, "messages");
         this.style = Objects.requireNonNull(style, "style");
@@ -53,12 +53,12 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
         // is right even for a player this server has never seen.
         return Items.head(Bukkit.getOfflinePlayer(friend.name()))
                 .name(this.style.text().of(
-                        friend.online() ? this.messages.friendOnline : this.messages.friendOffline,
+                        friend.online() ? this.messages.friends.friendOnline : this.messages.friends.friendOffline,
                         placeholders))
                 .lore(this.style.text().ofAll(
                         friend.online()
-                                ? this.messages.friendOnlineLore
-                                : this.messages.friendOfflineLore,
+                                ? this.messages.friends.friendOnlineLore
+                                : this.messages.friends.friendOfflineLore,
                         placeholders))
                 .plain()
                 .build();
@@ -88,8 +88,8 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
             this.item(
                     this.size() / 2,
                     Items.of(Material.BOOK)
-                            .name(this.style.text().of(this.messages.noFriends))
-                            .lore(this.style.text().ofAll(this.messages.noFriendsLore, Map.of()))
+                            .name(this.style.text().of(this.messages.friends.noFriends))
+                            .lore(this.style.text().ofAll(this.messages.friends.noFriendsLore, Map.of()))
                             .plain()
                             .build());
         }
@@ -101,9 +101,9 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
             this.button(
                     bottom + 8,
                     Items.of(Material.WRITABLE_BOOK)
-                            .name(this.style.text().of(this.messages.pendingRequests, placeholders))
+                            .name(this.style.text().of(this.messages.friends.pendingRequests, placeholders))
                             .lore(this.style.text().ofAll(
-                                    this.messages.pendingRequestsLore, placeholders))
+                                    this.messages.friends.pendingRequestsLore, placeholders))
                             .amount(this.pendingRequests)
                             .glowing()
                             .plain()
@@ -115,6 +115,27 @@ public final class FriendsMenu extends PaginatedMenu<MenuPayload.Friends.Friend>
         }
 
         this.fill(this.style.filler());
+    }
+
+    /**
+     * The strip along the top, the same one the profile draws.
+     *
+     * <p>The old server had it in both menus, and without it there is no way back: this list
+     * was opened from the profile and ended there.
+     */
+    private void tabs() {
+        for (int slot = 0; slot < MenuTabs.WIDTH && slot < this.size(); slot++) {
+            this.item(slot, MenuTabs.filler());
+        }
+
+        // Left open, because the profile replaces this menu rather than following it.
+        this.button(
+                MenuTabs.PROFILE_SLOT,
+                MenuTabs.profile(this.messages.common, this.style, false),
+                (player, type) ->
+                        this.channel.send(player, MenuAction.of(MenuKind.FRIENDS, "profile")));
+
+        this.item(MenuTabs.FRIENDS_SLOT, MenuTabs.friends(this.messages.common, this.style, true));
     }
 
     @Override
