@@ -480,8 +480,10 @@ public class MenusMessages extends OkaeriConfig {
     /** {@code /dodatki} */
     public static class CosmeticsSection extends OkaeriConfig {
 
-        @Comment("Placeholder: {BALANCE}")
-        public String title = "<dark_gray>Dodatki <dark_gray>(<aqua>{BALANCE}❖<dark_gray>)";
+        @Comment("Bez {BALANCE} celowo: tytul, ktory zmienia sie razem z trescia, wymusza")
+        @Comment("prawdziwe otwarcie okna zamiast przerysowania go w miejscu - czyli mrugniecie")
+        @Comment("i kursor wyrzucony na srodek po kazdym zakupie. Stan portfela jest na kafelkach.")
+        public String title = "<dark_gray>Dodatki";
 
         @Comment("")
         public int rows = 6;

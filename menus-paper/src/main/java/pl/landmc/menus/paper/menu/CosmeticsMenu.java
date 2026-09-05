@@ -57,10 +57,11 @@ public final class CosmeticsMenu extends Menu {
                 continue;
             }
 
-            this.button(offer.slot(), this.render(offer), (player, type) -> {
-                this.channel.send(player, MenuAction.of(MenuKind.COSMETICS, "use", offer.id()));
-                player.closeInventory();
-            });
+            // Left open. The shop answers with the menu again and it is redrawn in place, so
+            // the tile changes under the cursor; closing first would show the world for the
+            // length of a round trip and throw the cursor back to the middle.
+            this.button(offer.slot(), this.render(offer), (player, type) ->
+                    this.channel.send(player, MenuAction.of(MenuKind.COSMETICS, "use", offer.id())));
         }
 
         this.fill(this.style.filler());
