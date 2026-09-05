@@ -101,6 +101,10 @@ public final class MenuMessageListener implements PluginMessageListener {
                     punishments, this.messages.punishments, this.style, this.zone);
             case MenuPayload.Servers servers -> new ServersMenu(
                     servers, this.messages.servers, this.style, this.channel);
+            // Drawn by the same menu with different words: a lobby list and a server list look
+            // alike and read differently.
+            case MenuPayload.Lobbies lobbies -> new ServersMenu(
+                    lobbies.asServers(), this.messages.lobbies, this.style, this.channel);
             case MenuPayload.Profile profile -> new ProfileMenu(
                     profile, this.messages, this.style, this.channel);
             case MenuPayload.Shop shop -> new ShopMenu(

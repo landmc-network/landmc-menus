@@ -21,7 +21,10 @@ public enum MenuKind {
     VISUAL_RANKS(7),
 
     /** The third tab of the profile: whatever the network can say about a player. */
-    STATISTICS(8);
+    STATISTICS(8),
+
+    /** Which lobby to stand on, as the old server's "podserwery" did. */
+    LOBBIES(9);
 
     private final int id;
 

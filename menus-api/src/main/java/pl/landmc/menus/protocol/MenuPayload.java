@@ -295,4 +295,30 @@ public sealed interface MenuPayload {
             }
         }
     }
+
+    /**
+     * The lobbies, and which of them the player is on.
+     *
+     * <p>The same shape as {@link Servers} and deliberately a different menu. The old server had
+     * both: a compass for the servers you can play on, and a separate list for which copy of the
+     * lobby you stand in. They read differently and are worded differently, and one payload
+     * doing both would need the text to travel with it.
+     */
+    record Lobbies(String currentServer, List<Servers.Server> lobbies) implements MenuPayload {
+
+        public Lobbies {
+            Objects.requireNonNull(currentServer, "currentServer");
+            lobbies = List.copyOf(Objects.requireNonNull(lobbies, "lobbies"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.LOBBIES;
+        }
+
+        /** The same list, for the menu that already knows how to draw one. */
+        public Servers asServers() {
+            return new Servers(this.currentServer, this.lobbies);
+        }
+    }
 }

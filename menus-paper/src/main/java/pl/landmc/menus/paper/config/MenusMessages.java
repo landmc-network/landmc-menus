@@ -31,6 +31,10 @@ public class MenusMessages extends OkaeriConfig {
     public ServersSection servers = new ServersSection();
 
     @Comment("")
+    @Comment("Podserwery - lista instancji lobby. Te same pola co przy serwerach.")
+    public ServersSection lobbies = lobbiesDefaults();
+
+    @Comment("")
     public ProfileSection profile = new ProfileSection();
 
     @Comment("")
@@ -45,6 +49,18 @@ public class MenusMessages extends OkaeriConfig {
     @Comment("")
     @CustomKey("visual-ranks")
     public VisualRanksSection visualRanks = new VisualRanksSection();
+
+    /** The lobby list starts from the server list's wording and changes what differs. */
+    private static ServersSection lobbiesDefaults() {
+        ServersSection section = new ServersSection();
+        section.title = "<dark_gray>Podserwery";
+        section.rows = 1;
+        section.serverCurrentLore = List.of(
+                "<gray>Graczy: <white>{ONLINE}",
+                "",
+                "<red>Znajdujesz się już na tym serwerze!");
+        return section;
+    }
 
     /** Text that appears in more than one menu. */
     public static class CommonSection extends OkaeriConfig {

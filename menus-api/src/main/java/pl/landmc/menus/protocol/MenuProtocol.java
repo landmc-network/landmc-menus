@@ -59,6 +59,7 @@ public final class MenuProtocol {
                 case MenuPayload.Friends friends -> writeFriends(out, friends);
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
+                case MenuPayload.Lobbies lobbies -> writeServers(out, lobbies.asServers());
                 case MenuPayload.Profile profile -> writeProfile(out, profile);
                 case MenuPayload.Shop shop -> writeShop(out, shop);
                 case MenuPayload.Ranks ranks -> writeRanks(out, ranks);
@@ -227,6 +228,7 @@ public final class MenuProtocol {
                 case FRIENDS -> readFriends(in);
                 case PUNISHMENTS -> readPunishments(in);
                 case SERVERS -> readServers(in);
+                case LOBBIES -> readLobbies(in);
                 case PROFILE -> readProfile(in);
                 case SHOP -> readShop(in);
                 case RANKS -> readRanks(in);
@@ -382,6 +384,12 @@ public final class MenuProtocol {
         }
 
         return new MenuPayload.VisualRanks(Math.max(0L, balance), active, offers);
+    }
+
+    private static MenuPayload readLobbies(DataInputStream in) throws IOException {
+        // The same bytes as a server list; only the menu drawn from them differs.
+        MenuPayload.Servers servers = (MenuPayload.Servers) readServers(in);
+        return new MenuPayload.Lobbies(servers.currentServer(), servers.servers());
     }
 
     private static MenuPayload readStatistics(DataInputStream in) throws IOException {

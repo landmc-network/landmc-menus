@@ -218,6 +218,7 @@ class MenuProtocolTest {
         assertEquals(6, MenuKind.RANKS.id());
         assertEquals(7, MenuKind.VISUAL_RANKS.id());
         assertEquals(8, MenuKind.STATISTICS.id());
+        assertEquals(9, MenuKind.LOBBIES.id());
 
         for (MenuKind kind : MenuKind.values()) {
             assertEquals(kind, MenuKind.byId(kind.id()).orElseThrow());
@@ -316,6 +317,20 @@ class MenuProtocolTest {
         // A tab with nothing to say is still a tab, not an error.
         MenuPayload.Statistics empty = new MenuPayload.Statistics("Crispi", List.of());
         assertEquals(empty, MenuProtocol.decodePayload(MenuProtocol.encode(empty)));
+    }
+
+    @Test
+    @DisplayName("the lobby list comes back as a lobby list, not as a server list")
+    void roundTripsLobbies() {
+        MenuPayload.Lobbies original = new MenuPayload.Lobbies("lobby-1", List.of(
+                new MenuPayload.Servers.Server("lobby-1", "Hub #1", 12, true),
+                new MenuPayload.Servers.Server("lobby-2", "Hub #2", 3, true)));
+
+        MenuPayload decoded = MenuProtocol.decodePayload(MenuProtocol.encode(original));
+
+        assertEquals(original, decoded);
+        // The bytes are a server list's; what must survive is which menu they open.
+        assertEquals(MenuKind.LOBBIES, decoded.kind());
     }
 
     /** A friends payload whose header is valid and whose entry count is not. */
