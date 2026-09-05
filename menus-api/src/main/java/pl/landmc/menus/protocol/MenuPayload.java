@@ -134,4 +134,86 @@ public sealed interface MenuPayload {
             }
         }
     }
+
+    /**
+     * The premium shop, the menu {@code /sklep} opens.
+     *
+     * <p>Almost all of it is fixed text that lives in the backend's messages file. What travels
+     * is the part the proxy knows and the backend cannot: which ranks are on sale and what they
+     * start at, so the tiles read the way the original's did instead of quoting numbers that
+     * were written into them by hand.
+     *
+     * @param cheapestRank the lowest price on offer, for "ceny zaczynają się od"
+     * @param diamondsPerPln the top-up rate the deposit tile quotes
+     */
+    record Shop(List<String> rankNames, long cheapestRank, int diamondsPerPln)
+            implements MenuPayload {
+
+        public Shop {
+            rankNames = List.copyOf(Objects.requireNonNull(rankNames, "rankNames"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.SHOP;
+        }
+    }
+
+    /**
+     * The rank shop: what is for sale, for how much, and what the player has to spend with.
+     *
+     * <p>Whether an offer can be afforded is decided by the sender, not by the menu. The backend
+     * has no idea what a diamond is, and a menu doing its own arithmetic could disagree with the
+     * plugin that takes the payment - the one disagreement a shop must never have.
+     *
+     * @param balance what the player holds, so a tile can say how much they are short by
+     */
+    record Ranks(long balance, List<Offer> offers) implements MenuPayload {
+
+        public Ranks {
+            offers = List.copyOf(Objects.requireNonNull(offers, "offers"));
+        }
+
+        @Override
+        public MenuKind kind() {
+            return MenuKind.RANKS;
+        }
+
+        /**
+         * One rank on sale.
+         *
+         * @param id what a click sends back; the shop, not the menu, knows what it means
+         * @param slot where it sits, because the shop's layout is the proxy's to decide and the
+         *     original put each rank in a particular place
+         * @param icon the material to draw it as, or PLAYER_HEAD when a texture is given
+         * @param texture the skin URL for a head, empty for a plain material
+         * @param infoCommand the command that lists what the rank gives, as the lore says
+         * @param owned true when the player already has this rank, so it is shown as theirs
+         *     rather than offered for sale a second time
+         */
+        public record Offer(
+                String id,
+                String displayName,
+                int slot,
+                String icon,
+                String texture,
+                String infoCommand,
+                long price,
+                boolean owned,
+                boolean glowing) {
+
+            public Offer {
+                Objects.requireNonNull(id, "id");
+                Objects.requireNonNull(displayName, "displayName");
+                Objects.requireNonNull(icon, "icon");
+                Objects.requireNonNull(texture, "texture");
+                Objects.requireNonNull(infoCommand, "infoCommand");
+            }
+
+            /** How much more the player needs, given what they hold. */
+            public long missing(long balance) {
+                return Math.max(0L, this.price - balance);
+            }
+        }
+    }
 }

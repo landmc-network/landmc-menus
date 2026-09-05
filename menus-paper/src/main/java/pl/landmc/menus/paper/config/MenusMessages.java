@@ -33,6 +33,12 @@ public class MenusMessages extends OkaeriConfig {
     @Comment("")
     public ProfileSection profile = new ProfileSection();
 
+    @Comment("")
+    public ShopSection shop = new ShopSection();
+
+    @Comment("")
+    public RanksSection ranks = new RanksSection();
+
     /** Text that appears in more than one menu. */
     public static class CommonSection extends OkaeriConfig {
 
@@ -200,6 +206,107 @@ public class MenusMessages extends OkaeriConfig {
                 "<gray>tylko z kontem premium Mojanga.",
                 "",
                 "<gray>Kliknij, aby sprawdzić i przełączyć.");
+    }
+
+    /** {@code /sklep} - the premium shop, as the original opened it. */
+    public static class ShopSection extends OkaeriConfig {
+
+        public String title = "<dark_gray>Sklep z usługami premium";
+
+        @Comment("")
+        @Comment("Ile rzedow ma menu. W oryginale byly cztery.")
+        public int rows = 4;
+
+        @Comment("")
+        @Comment("Tabliczka na gorze.")
+        @CustomKey("header-name")
+        public String headerName = "<green><bold>LANDMC.PL";
+
+        @CustomKey("header-lore")
+        public List<String> headerLore = List.of(
+                "<gray>Witaj w sklepie! Wybierz odpowiednią kategorię, ...",
+                "<gray>... a następnie zakup odpowiednią usługę.");
+
+        @Comment("")
+        @Comment("Kafelek rang. Placeholdery: {RANKS} - nazwy rang po przecinku, {FROM} - najnizsza cena")
+        @CustomKey("ranks-name")
+        public String ranksName = "<green>Rangi <dark_gray>({RANKS}<dark_gray>)";
+
+        @CustomKey("ranks-lore")
+        public List<String> ranksLore = List.of(
+                "<gray>Zakup rangę z dodatkowymi przywilejami!",
+                "",
+                "<yellow>Ranga jest na <red><underlined>ZAWSZE</underlined><yellow>!",
+                "",
+                "<green>Ceny zaczynają się od <aqua>{FROM}❖<green>!",
+                "",
+                "<yellow>Kliknij, aby wybrać kategorię.");
+
+        @Comment("")
+        @Comment("Kafelek doladowania. Placeholder: {RATE} - ile diamentow za zlotowke")
+        @CustomKey("top-up-name")
+        public String topUpName = "<green>Doładowanie";
+
+        @CustomKey("top-up-lore")
+        public List<String> topUpLore = List.of(
+                "<gray>Doładuj swoje konto, aby zakupić ...",
+                "<gray>... dodatkowe usługi premium.",
+                "",
+                "<green>Aktualny przelicznik <aqua>❖ <green>to <aqua>{RATE}❖ <green>= <gold>1 PLN<green>.",
+                "",
+                "<yellow>Kliknij, aby przejść dalej.");
+    }
+
+    /** {@code /rangi} - the rank shop. */
+    public static class RanksSection extends OkaeriConfig {
+
+        public String title = "<dark_gray>Rangi premium";
+
+        @Comment("")
+        @Comment("Ile rzedow ma menu. W oryginale bylo szesc, bo rangi stoja w konkretnych slotach.")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Nazwa kafelka rangi. Placeholder: {RANK}")
+        @CustomKey("rank-name")
+        public String rankName = "<green>Ranga <dark_gray>({RANK}<dark_gray>)";
+
+        @Comment("")
+        @Comment("Opis rangi. Placeholdery: {RANK}, {PRICE}, {COMMAND}, {STATE}")
+        @CustomKey("rank-lore")
+        public List<String> rankLore = List.of(
+                "<gray>Ranga, dzięki której wyróżnisz się na czacie!",
+                "",
+                "<green>Wszystkie rzeczy, które posiada ta ranga ...",
+                "<green>... można znaleźć pod komendą <white>{COMMAND}<green>.",
+                "",
+                "<white>Cena: <aqua>{PRICE}❖",
+                "",
+                "<red><bold>PAMIĘTAJ! <red>Ranga jest na <red><underlined>ZAWSZE!",
+                "",
+                "{STATE}");
+
+        @Comment("")
+        @Comment("Ostatnia linia opisu, zaleznie od tego, na co gracza stac.")
+        @Comment("Placeholdery: {RANK}, {PRICE}, {MISSING}")
+        @CustomKey("state-buy")
+        public String stateBuy = "<yellow>Kliknij, aby zakupić rangę {RANK}<yellow>.";
+
+        @CustomKey("state-too-poor")
+        public String stateTooPoor =
+                "<red>Nie masz tyle <aqua>❖<red>, aby ją zakupić."
+                        + " Brakuje Ci <aqua>{MISSING}❖<red>.";
+
+        @CustomKey("state-owned")
+        public String stateOwned = "<red>Masz już zakupioną tę rangę!";
+
+        @Comment("")
+        @Comment("Strzalka powrotu do /sklep. Slot 53, tak jak w oryginale.")
+        @CustomKey("back-name")
+        public String backName = "<green><bold>POWRÓT";
+
+        @CustomKey("back-lore")
+        public List<String> backLore = List.of("<yellow>Kliknij, aby powrócić.");
     }
 
     /** {@code /serwery} */

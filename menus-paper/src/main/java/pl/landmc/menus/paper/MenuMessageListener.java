@@ -13,7 +13,9 @@ import pl.landmc.menus.paper.menu.FriendsMenu;
 import pl.landmc.menus.paper.menu.MenuStyle;
 import pl.landmc.menus.paper.menu.ProfileMenu;
 import pl.landmc.menus.paper.menu.PunishmentsMenu;
+import pl.landmc.menus.paper.menu.RanksMenu;
 import pl.landmc.menus.paper.menu.ServersMenu;
+import pl.landmc.menus.paper.menu.ShopMenu;
 import pl.landmc.menus.protocol.MenuPayload;
 import pl.landmc.menus.protocol.MenuProtocol;
 import pl.landmc.menus.protocol.MenuProtocolException;
@@ -99,6 +101,10 @@ public final class MenuMessageListener implements PluginMessageListener {
                     servers, this.messages.servers, this.style, this.channel);
             case MenuPayload.Profile profile -> new ProfileMenu(
                     profile, this.messages.profile, this.style, this.channel);
+            case MenuPayload.Shop shop -> new ShopMenu(
+                    shop, this.messages.shop, this.style, this.channel);
+            case MenuPayload.Ranks ranks -> new RanksMenu(
+                    ranks, this.messages.ranks, this.style, this.channel);
         };
 
         // Paper hands plugin messages to listeners on the main thread, which is where a menu

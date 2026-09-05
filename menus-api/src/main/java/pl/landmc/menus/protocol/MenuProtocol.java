@@ -60,6 +60,8 @@ public final class MenuProtocol {
                 case MenuPayload.Punishments punishments -> writePunishments(out, punishments);
                 case MenuPayload.Servers servers -> writeServers(out, servers);
                 case MenuPayload.Profile profile -> writeProfile(out, profile);
+                case MenuPayload.Shop shop -> writeShop(out, shop);
+                case MenuPayload.Ranks ranks -> writeRanks(out, ranks);
             }
         }
         catch (IOException exception) {
@@ -130,6 +132,36 @@ public final class MenuProtocol {
         out.writeUTF(payload.currentServer());
     }
 
+    private static void writeShop(DataOutputStream out, MenuPayload.Shop payload)
+            throws IOException {
+
+        out.writeLong(payload.cheapestRank());
+        out.writeInt(payload.diamondsPerPln());
+        out.writeInt(payload.rankNames().size());
+        for (String name : payload.rankNames()) {
+            out.writeUTF(name);
+        }
+    }
+
+    private static void writeRanks(DataOutputStream out, MenuPayload.Ranks payload)
+            throws IOException {
+
+        out.writeLong(payload.balance());
+        out.writeInt(payload.offers().size());
+
+        for (MenuPayload.Ranks.Offer offer : payload.offers()) {
+            out.writeUTF(offer.id());
+            out.writeUTF(offer.displayName());
+            out.writeInt(offer.slot());
+            out.writeUTF(offer.icon());
+            out.writeUTF(offer.texture());
+            out.writeUTF(offer.infoCommand());
+            out.writeLong(offer.price());
+            out.writeBoolean(offer.owned());
+            out.writeBoolean(offer.glowing());
+        }
+    }
+
     private static void writeServers(DataOutputStream out, MenuPayload.Servers payload)
             throws IOException {
 
@@ -165,6 +197,8 @@ public final class MenuProtocol {
                 case PUNISHMENTS -> readPunishments(in);
                 case SERVERS -> readServers(in);
                 case PROFILE -> readProfile(in);
+                case SHOP -> readShop(in);
+                case RANKS -> readRanks(in);
             };
         }
         catch (IOException exception) {
@@ -266,6 +300,41 @@ public final class MenuProtocol {
                 Math.max(0, in.readInt()),
                 Math.max(0, in.readInt()),
                 in.readUTF());
+    }
+
+    private static MenuPayload readShop(DataInputStream in) throws IOException {
+        long cheapest = in.readLong();
+        int rate = in.readInt();
+        int count = readCount(in);
+
+        List<String> names = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            names.add(in.readUTF());
+        }
+
+        return new MenuPayload.Shop(names, Math.max(0L, cheapest), Math.max(0, rate));
+    }
+
+    private static MenuPayload readRanks(DataInputStream in) throws IOException {
+        long balance = in.readLong();
+        int count = readCount(in);
+
+        List<MenuPayload.Ranks.Offer> offers = new ArrayList<>(count);
+        for (int index = 0; index < count; index++) {
+            offers.add(new MenuPayload.Ranks.Offer(
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readInt(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readUTF(),
+                    in.readLong(),
+                    in.readBoolean(),
+                    in.readBoolean()));
+        }
+
+        // A negative balance cannot happen and would only be there to make a lore line lie.
+        return new MenuPayload.Ranks(Math.max(0L, balance), offers);
     }
 
     private static MenuPayload readServers(DataInputStream in) throws IOException {

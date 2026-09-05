@@ -9,7 +9,13 @@ public enum MenuKind {
     PUNISHMENTS(2),
     SERVERS(3),
 
-    PROFILE(4);
+    PROFILE(4),
+
+    /** The premium shop, as {@code /sklep} has always opened it. */
+    SHOP(5),
+
+    /** The rank shop behind it. */
+    RANKS(6);
 
     private final int id;
 

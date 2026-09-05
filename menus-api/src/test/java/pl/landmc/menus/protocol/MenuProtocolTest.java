@@ -214,6 +214,8 @@ class MenuProtocolTest {
         assertEquals(2, MenuKind.PUNISHMENTS.id());
         assertEquals(3, MenuKind.SERVERS.id());
         assertEquals(4, MenuKind.PROFILE.id());
+        assertEquals(5, MenuKind.SHOP.id());
+        assertEquals(6, MenuKind.RANKS.id());
 
         for (MenuKind kind : MenuKind.values()) {
             assertEquals(kind, MenuKind.byId(kind.id()).orElseThrow());
@@ -234,6 +236,56 @@ class MenuProtocolTest {
         // The friend limit is 100. A payload that outgrew a plugin message would fail on a
         // full list only - which is to say, on exactly the players who use the feature most.
         assertTrue(encoded.length < 32_768, "a full friend list encodes to " + encoded.length + " bytes");
+    }
+
+    @Test
+    @DisplayName("the premium shop comes back as it went out")
+    void roundTripsTheShop() {
+        MenuPayload.Shop original = new MenuPayload.Shop(List.of("VIP", "SVIP", "SZEFUNCIO"), 200L, 10);
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+        assertEquals(
+                new MenuPayload.Shop(List.of(), 0L, 10),
+                MenuProtocol.decodePayload(MenuProtocol.encode(new MenuPayload.Shop(List.of(), 0L, 10))));
+    }
+
+    @Test
+    @DisplayName("the rank shop comes back as it went out")
+    void roundTripsTheRankShop() {
+        MenuPayload.Ranks original = new MenuPayload.Ranks(340L, List.of(
+                new MenuPayload.Ranks.Offer(
+                        "vip", "<green>VIP", 11, "PLAYER_HEAD",
+                        "http://textures.minecraft.net/texture/1b67", "/vip", 200L, true, false),
+                new MenuPayload.Ranks.Offer(
+                        "szefuncio", "<gold>SZEFUNCIO", 15, "PLAYER_HEAD", "", "/szefuncio",
+                        1000L, false, true)));
+
+        assertEquals(original, MenuProtocol.decodePayload(MenuProtocol.encode(original)));
+    }
+
+    @Test
+    @DisplayName("an offer says how much more the player needs, and never a negative amount")
+    void reportsWhatIsMissing() {
+        MenuPayload.Ranks.Offer offer = new MenuPayload.Ranks.Offer(
+                "vip", "VIP", 11, "PLAYER_HEAD", "", "/vip", 200L, false, false);
+
+        assertEquals(200L, offer.missing(0L));
+        assertEquals(60L, offer.missing(140L));
+        // Somebody who can afford it is not short by a negative number.
+        assertEquals(0L, offer.missing(200L));
+        assertEquals(0L, offer.missing(5_000L));
+    }
+
+    @Test
+    @DisplayName("a balance that could not be real is not carried into the menu")
+    void refusesANegativeBalance() {
+        // Nothing writes this, which is the point: the shop draws "brakuje ci" from it, and a
+        // negative number there would be a lie shown to a player about their own money.
+        byte[] encoded = MenuProtocol.encode(new MenuPayload.Ranks(0L, List.of()));
+        encoded[3] = (byte) 0xFF;
+
+        MenuPayload.Ranks decoded = (MenuPayload.Ranks) MenuProtocol.decodePayload(encoded);
+        assertEquals(0L, decoded.balance());
     }
 
     /** A friends payload whose header is valid and whose entry count is not. */
