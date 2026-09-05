@@ -73,9 +73,11 @@ public final class ProfileMenu extends Menu {
 
         Map<String, String> placeholders = Map.of(
                 "{PLAYER}", this.style.text().escaped(this.payload.playerName()),
-                // A rank name comes from LuckPerms, which is to say from something an
-                // administrator typed, so it is escaped like any other value.
-                "{RANK}", this.style.text().escaped(rank),
+                // Not escaped. A rank prefix is set by an administrator in LuckPerms and is
+                // written to be read as colour - escaping it printed the tags themselves,
+                // which is what the profile showed. A player name still is escaped: that is
+                // the one value here somebody else chose.
+                "{RANK}", rank,
                 "{SERVER}", this.style.text().escaped(this.payload.currentServer()));
 
         return Items.head(Bukkit.getOfflinePlayer(this.payload.playerName()))
