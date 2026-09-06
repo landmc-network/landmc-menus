@@ -53,6 +53,7 @@ public final class CosmeticsMenu extends Menu {
     protected void redraw() {
         if (this.payload.isIndex()) {
             this.drawCategories();
+            this.drawClear();
             this.fill(this.style.filler());
             return;
         }
@@ -77,6 +78,36 @@ public final class CosmeticsMenu extends Menu {
         }
 
         this.fill(this.style.filler());
+    }
+
+    /**
+     * The way out of everything at once.
+     *
+     * <p>Taking six things off means opening six rooms and clicking six tiles, and the shape of
+     * that is a menu that is easier to get into than out of. It sits on the first screen because
+     * that is where somebody goes when they have decided they have had enough of all of it.
+     *
+     * <p>Drawn even when there is nothing on, saying so, rather than appearing and disappearing:
+     * a tile that comes and goes moves everything around it under the cursor.
+     */
+    private void drawClear() {
+        if (!this.fits(this.messages.clearSlot)) {
+            return;
+        }
+
+        int worn = this.payload.worn().size();
+        Map<String, String> placeholders = Map.of("{WORN}", Integer.toString(worn));
+
+        ItemStack tile = Items.of(material(this.messages.clearIcon))
+                .name(this.style.text().of(this.messages.clearName, placeholders))
+                .lore(this.style.text().ofAll(
+                        worn == 0 ? this.messages.clearNoneLore : this.messages.clearLore,
+                        placeholders))
+                .plain()
+                .build();
+
+        this.button(this.messages.clearSlot, tile, (player, type) ->
+                this.channel.send(player, MenuAction.of(MenuKind.COSMETICS, "clear")));
     }
 
     private void drawCategories() {

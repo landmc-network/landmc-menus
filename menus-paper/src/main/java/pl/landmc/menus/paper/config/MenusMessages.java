@@ -623,6 +623,31 @@ public class MenusMessages extends OkaeriConfig {
                 "<yellow>Kliknij, aby otworzyć.");
 
         @Comment("")
+        @Comment("Zdejmowanie wszystkiego naraz, na pierwszym ekranie.")
+        @Comment("Placeholder: {WORN} - ile rzeczy gracz ma na sobie teraz.")
+        @CustomKey("clear-slot")
+        public int clearSlot = 49;
+
+        @CustomKey("clear-icon")
+        public String clearIcon = "BARRIER";
+
+        @CustomKey("clear-name")
+        public String clearName = "<red>Zdejmij wszystko";
+
+        @CustomKey("clear-lore")
+        public List<String> clearLore = List.of(
+                "<gray>Masz na sobie: <white>{WORN}</white>",
+                "",
+                "<yellow>Kliknij, aby zdjąć wszystkie dodatki.");
+
+        @Comment("")
+        @Comment("To samo, gdy gracz nie ma na sobie nic - kafelek zostaje na miejscu,")
+        @Comment("zeby menu nie przestawialo sie pod kursorem.")
+        @CustomKey("clear-none-lore")
+        public List<String> clearNoneLore = List.of(
+                "<gray>Nie masz na sobie żadnych dodatków.");
+
+        @Comment("")
         @Comment("Powrot do wyboru kategorii.")
         @CustomKey("back-slot")
         public int backSlot = 49;
